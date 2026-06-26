@@ -19,26 +19,64 @@ export const SECTIONS = [
 ];
 
 export function TopNav() {
+  const [hidden, setHidden] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    let last = window.scrollY;
+    const onScroll = () => {
+      const y = window.scrollY;
+      setScrolled(y > 40);
+      if (y > last && y > 120) setHidden(true);
+      else setHidden(false);
+      last = y;
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   return (
-    <header className="fixed left-1/2 top-6 z-50 -translate-x-1/2">
-      <div className="flex items-center gap-6 rounded-full border border-black/5 bg-white/70 px-5 py-2.5 backdrop-blur-xl"
-           style={{ boxShadow: "var(--shadow-soft)" }}>
-        <a href="#hero" className="flex items-center gap-2">
-          <Logo size={22} />
+    <header
+      className={`fixed left-1/2 top-6 z-50 -translate-x-1/2 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+        hidden ? "-translate-y-32 opacity-0" : "translate-y-0 opacity-100"
+      }`}
+    >
+      <div
+        className="flex items-center gap-6 rounded-full border border-black/5 px-5 py-2.5 backdrop-blur-xl transition-all duration-500"
+        style={{
+          background: scrolled ? "rgba(255,255,255,0.78)" : "rgba(255,255,255,0.55)",
+          boxShadow: scrolled ? "0 18px 40px -20px rgba(17,17,17,0.18)" : "var(--shadow-soft)",
+        }}
+      >
+        <a href="#hero" data-magnetic className="group flex items-center gap-2">
+          <span className="relative">
+            <Logo size={22} />
+            <span className="absolute inset-0 rounded-full opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+                  style={{ boxShadow: "0 0 18px rgba(244,176,0,0.6)" }} />
+          </span>
           <span className="text-[13px] font-medium tracking-tight">Terra Belle</span>
         </a>
         <span className="hidden h-4 w-px bg-black/10 sm:block" />
         <nav className="hidden items-center gap-5 text-[12.5px] text-mist sm:flex">
-          <a href="#mission" className="transition hover:text-ink">Mission</a>
-          <a href="#technology" className="transition hover:text-ink">Ecosystem</a>
-          <a href="#research" className="transition hover:text-ink">Research</a>
-          <a href="#impact" className="transition hover:text-ink">Impact</a>
+          {["mission", "technology", "research", "impact"].map((s) => (
+            <a
+              key={s}
+              href={`#${s}`}
+              data-magnetic
+              className="group relative capitalize transition hover:text-ink"
+            >
+              {s}
+              <span className="absolute -bottom-1 left-0 h-px w-full origin-left scale-x-0 bg-gradient-to-r from-gold via-green to-earth transition-transform duration-500 group-hover:scale-x-100" />
+            </a>
+          ))}
         </nav>
         <a
           href="#future"
-          className="rounded-full bg-ink px-3.5 py-1.5 text-[12px] font-medium text-white transition hover:opacity-90"
+          data-magnetic
+          className="group relative overflow-hidden rounded-full bg-ink px-3.5 py-1.5 text-[12px] font-medium text-white transition-all duration-300 hover:scale-[1.04]"
         >
-          Join
+          <span className="relative z-10">Join</span>
+          <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-gold via-green to-earth transition-transform duration-500 group-hover:translate-x-0" />
         </a>
       </div>
     </header>
@@ -65,11 +103,19 @@ export function SideTimeline() {
     return () => io.disconnect();
   }, []);
 
+  const activeIdx = Math.max(0, SECTIONS.findIndex((s) => s.id === active));
+
   return (
-    <nav className="fixed right-6 top-1/2 z-40 hidden -translate-y-1/2 lg:block">
-      <ul className="flex flex-col gap-3">
-        {SECTIONS.map((s) => {
+    <nav className="fixed right-6 top-1/2 z-40 hidden -translate-y-1/2 lg:block" aria-label="Section progress">
+      {/* spine */}
+      <span
+        className="absolute right-[5px] top-0 h-full w-px"
+        style={{ background: "linear-gradient(to bottom, transparent, rgba(17,17,17,0.12), transparent)" }}
+      />
+      <ul className="relative flex flex-col gap-5">
+        {SECTIONS.map((s, i) => {
           const isActive = active === s.id;
+          const isPast = i < activeIdx;
           return (
             <li
               key={s.id}
@@ -78,34 +124,62 @@ export function SideTimeline() {
               onMouseLeave={() => setHover(null)}
             >
               <span
-                className={`pointer-events-none absolute right-7 whitespace-nowrap text-[11px] uppercase tracking-[0.18em] transition-all duration-300 ${
-                  hover === s.id || isActive ? "opacity-100 translate-x-0" : "opacity-0 translate-x-1"
+                className={`pointer-events-none absolute right-8 whitespace-nowrap text-[11px] uppercase tracking-[0.2em] transition-all duration-300 ${
+                  hover === s.id || isActive ? "translate-x-0 opacity-100" : "translate-x-1 opacity-0"
                 }`}
                 style={{ color: isActive ? "var(--ink)" : "var(--mist)" }}
               >
                 {s.label}
               </span>
-              <a
-                href={`#${s.id}`}
-                className="block transition-all"
-                aria-label={s.label}
-              >
+              <a href={`#${s.id}`} data-magnetic className="relative block h-3 w-3" aria-label={s.label}>
+                {/* core node */}
                 <span
-                  className="block rounded-full transition-all duration-500"
+                  className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full transition-all duration-500"
                   style={{
-                    width: isActive ? 22 : 14,
-                    height: 2,
+                    width: isActive ? 8 : 6,
+                    height: isActive ? 8 : 6,
                     background: isActive
-                      ? "linear-gradient(90deg, var(--gold), var(--green), var(--earth-blue))"
-                      : "rgba(17,17,17,0.18)",
-                    boxShadow: isActive ? "0 0 12px rgba(244,176,0,0.4)" : "none",
+                      ? "var(--ink)"
+                      : isPast
+                      ? "linear-gradient(135deg, var(--gold), var(--green))"
+                      : "transparent",
+                    border: isActive || isPast ? "none" : "1px solid rgba(17,17,17,0.25)",
                   }}
                 />
+                {/* orbiting energy ring on active */}
+                {isActive && (
+                  <>
+                    <span
+                      className="absolute left-1/2 top-1/2 h-6 w-6 -translate-x-1/2 -translate-y-1/2 rounded-full border"
+                      style={{ borderColor: "rgba(244,176,0,0.5)", animation: "orbitRing 4s linear infinite" }}
+                    />
+                    <span
+                      className="absolute left-1/2 top-1/2 h-1.5 w-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full"
+                      style={{
+                        background: "var(--gold)",
+                        boxShadow: "0 0 8px var(--gold)",
+                        transformOrigin: "0 0",
+                        animation: "orbitDot 4s linear infinite",
+                      }}
+                    />
+                  </>
+                )}
               </a>
             </li>
           );
         })}
       </ul>
+      <style>{`
+        @keyframes orbitRing {
+          0%   { transform: translate(-50%,-50%) rotate(0deg) scale(1); opacity: 0.6; }
+          50%  { transform: translate(-50%,-50%) rotate(180deg) scale(1.15); opacity: 1; }
+          100% { transform: translate(-50%,-50%) rotate(360deg) scale(1); opacity: 0.6; }
+        }
+        @keyframes orbitDot {
+          from { transform: translate(-50%,-50%) rotate(0deg) translateX(12px); }
+          to   { transform: translate(-50%,-50%) rotate(360deg) translateX(12px); }
+        }
+      `}</style>
     </nav>
   );
 }
