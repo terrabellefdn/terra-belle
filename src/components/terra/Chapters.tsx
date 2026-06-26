@@ -49,17 +49,34 @@ function ChapterMeta({ index, title, arc }: { index: string; title: string; arc:
   );
 }
 
-function Bridge({ to, label }: { to: string; label: string }) {
+function Bridge({ from, to, label }: { from: string; to: string; label: string }) {
+  const { active } = useFlow();
+  const flow = active ? FLOWS[active] : null;
+  const contextual = flow?.bridges[from];
+  const display = contextual ?? label;
+  const color = flow?.color;
   return (
     <Reveal delay={0.1}>
       <div className="mx-auto mt-24 max-w-3xl border-t border-black/5 pt-10 text-center">
-        <div className="text-[11px] uppercase tracking-[0.28em] text-mist">Next</div>
+        <div
+          className="flex items-center justify-center gap-3 text-[11px] uppercase tracking-[0.28em] transition-colors duration-500"
+          style={{ color: flow ? color : undefined }}
+        >
+          {flow && (
+            <span
+              className="h-1.5 w-1.5 rounded-full transition-all"
+              style={{ background: color, boxShadow: `0 0 10px ${color}` }}
+            />
+          )}
+          {flow ? `${flow.label} flow` : "Next"}
+        </div>
         <a
           href={`#${to}`}
           data-magnetic
-          className="group mt-3 inline-flex items-baseline gap-3 font-display text-[clamp(1.4rem,2.4vw,2rem)] leading-snug tracking-tight"
+          className="group mt-3 inline-flex items-baseline gap-3 font-display text-[clamp(1.4rem,2.4vw,2rem)] leading-snug tracking-tight transition-colors duration-500"
+          style={{ color: flow ? color : undefined }}
         >
-          <span>{label}</span>
+          <span>{display}</span>
           <span className="transition-transform duration-500 group-hover:translate-x-2">↓</span>
         </a>
       </div>
