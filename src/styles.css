@@ -95,12 +95,34 @@
   }
 
   ::selection {
-    background-color: var(--gold);
+    background: linear-gradient(120deg, var(--gold), var(--green));
     color: var(--ink);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+    }
   }
 }
 
 @layer utilities {
+  .tilt-card { position: relative; }
+  .tilt-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 500ms ease;
+    background: radial-gradient(280px circle at var(--mx, 50%) var(--my, 50%),
+      rgba(244, 176, 0, 0.18), transparent 60%);
+  }
+  .tilt-card:hover::after { opacity: 1; }
+
   .font-display { font-family: var(--font-display); }
   .text-balance { text-wrap: balance; }
 
