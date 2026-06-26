@@ -1,17 +1,21 @@
 "use client";
 import { motion, useScroll, useTransform } from "motion/react";
-import { useRef } from "react";
+import { useRef, type ComponentType } from "react";
 import { Section, Reveal, WordReveal, ParallaxBlock } from "./Section";
 import { Logo } from "./Logo";
+import { Tilt, Magnetic } from "./Interactive";
+import { LeafIcon, SunIcon, WindIcon, AIIcon, CircleIcon, ChartIcon, NetworkIcon, WaterIcon } from "./Icons";
 
-const PILLARS = [
-  { id: "technology", color: "#0E46B8", title: "Technology", body: "Open infrastructure connecting renewable systems, intelligence and capital flows." },
-  { id: "energy", color: "#F4B000", title: "Renewable Energy", body: "Distributed solar, wind and storage networks feeding the loop." },
-  { id: "environment", color: "#0DBB63", title: "Environmental Stewardship", body: "Restoring soils, watersheds, and forests as living infrastructure." },
-  { id: "ai", color: "#6B8CF7", title: "AI & Intelligence", body: "Models that read ecosystems and route resources where they regenerate most." },
-  { id: "circular", color: "#0DBB63", title: "Circular Economy", body: "Materials, products and value designed to return — never to waste." },
-  { id: "finance", color: "#F4B000", title: "Regenerative Finance", body: "Capital instruments that compound ecological and human dividends." },
+type IconProps = { size?: number; color?: string };
+const PILLARS: { id: string; color: string; title: string; body: string; Icon: ComponentType<IconProps>; connects: string[] }[] = [
+  { id: "technology", color: "#0E46B8", title: "Technology", body: "Open infrastructure connecting renewable systems, intelligence and capital flows.", Icon: NetworkIcon, connects: ["AI", "Research", "Infrastructure", "Finance"] },
+  { id: "energy", color: "#F4B000", title: "Renewable Energy", body: "Distributed solar, wind and storage networks feeding the loop.", Icon: SunIcon, connects: ["Communities", "Environment", "Technology"] },
+  { id: "environment", color: "#0DBB63", title: "Environmental Stewardship", body: "Restoring soils, watersheds, and forests as living infrastructure.", Icon: LeafIcon, connects: ["Communities", "Climate", "Agriculture"] },
+  { id: "ai", color: "#6B8CF7", title: "AI & Intelligence", body: "Models that read ecosystems and route resources where they regenerate most.", Icon: AIIcon, connects: ["Research", "Energy", "Finance"] },
+  { id: "circular", color: "#0DBB63", title: "Circular Economy", body: "Materials, products and value designed to return — never to waste.", Icon: CircleIcon, connects: ["Industry", "Communities", "Environment"] },
+  { id: "finance", color: "#F4B000", title: "Regenerative Finance", body: "Capital instruments that compound ecological and human dividends.", Icon: ChartIcon, connects: ["Innovation", "Research", "Education"] },
 ];
+
 
 export function Mission() {
   return (
@@ -51,43 +55,63 @@ export function Mission() {
 }
 
 function PillarCard({ p, i }: { p: (typeof PILLARS)[number]; i: number }) {
+  const Icon = p.Icon;
   return (
     <motion.article
       id={p.id}
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0, y: 30, filter: "blur(8px)" }}
+      whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
       viewport={{ once: true, margin: "-10%" }}
       transition={{ duration: 0.9, delay: (i % 3) * 0.1, ease: [0.22, 1, 0.36, 1] }}
-      whileHover={{ y: -6, rotate: -0.4 }}
-      className="group relative overflow-hidden rounded-3xl border border-black/5 bg-white p-8 transition-all duration-500 hover:shadow-[0_30px_80px_-30px_rgba(17,17,17,0.18)]"
     >
-      <div
-        className="absolute -right-20 -top-20 h-56 w-56 rounded-full opacity-0 blur-3xl transition-opacity duration-700 group-hover:opacity-60"
-        style={{ background: `radial-gradient(circle, ${p.color}55, transparent 65%)` }}
-      />
-      <div
-        className="absolute left-0 top-0 h-px w-full origin-left scale-x-0 transition-transform duration-700 group-hover:scale-x-100"
-        style={{ background: `linear-gradient(90deg, transparent, ${p.color}, transparent)` }}
-      />
-      <div className="flex items-center justify-between">
-        <span className="text-[11px] uppercase tracking-[0.24em] text-mist">0{i + 1}</span>
-        <span className="h-2 w-2 rounded-full" style={{ background: p.color }} />
-      </div>
-      <h3 className="mt-8 font-display text-3xl leading-tight tracking-tight">{p.title}</h3>
-      <p className="mt-4 text-[14px] leading-relaxed text-mist">{p.body}</p>
-      <div className="mt-10 flex items-center gap-2 text-[12px] font-medium">
-        <span className="relative">
-          Read pillar
-          <span
-            className="absolute -bottom-0.5 left-0 h-px w-full origin-left scale-x-0 transition-transform duration-500 group-hover:scale-x-100"
-            style={{ background: p.color }}
+      <Tilt>
+        <div className="group relative h-full overflow-hidden rounded-3xl border border-black/5 bg-white p-8 transition-shadow duration-500 hover:shadow-[0_30px_80px_-30px_rgba(17,17,17,0.22)]">
+          <div
+            className="absolute -right-20 -top-20 h-56 w-56 rounded-full opacity-0 blur-3xl transition-opacity duration-700 group-hover:opacity-70"
+            style={{ background: `radial-gradient(circle, ${p.color}66, transparent 65%)` }}
           />
-        </span>
-        <span className="transition-transform group-hover:translate-x-1">→</span>
-      </div>
+          <div
+            className="absolute left-0 top-0 h-px w-full origin-left scale-x-0 transition-transform duration-700 group-hover:scale-x-100"
+            style={{ background: `linear-gradient(90deg, transparent, ${p.color}, transparent)` }}
+          />
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] uppercase tracking-[0.24em] text-mist">0{i + 1}</span>
+            <div className="rounded-full border border-black/5 p-2 transition-colors duration-500 group-hover:border-black/15"
+                 style={{ background: `${p.color}10` }}>
+              <Icon size={22} color={p.color} />
+            </div>
+          </div>
+          <h3 className="mt-8 font-display text-3xl leading-tight tracking-tight">{p.title}</h3>
+          <p className="mt-4 text-[14px] leading-relaxed text-mist">{p.body}</p>
+
+          {/* connections — the ecosystem links */}
+          <div className="mt-8 flex flex-wrap gap-1.5">
+            {p.connects.map((c) => (
+              <span
+                key={c}
+                className="rounded-full border border-black/5 px-2.5 py-1 text-[10px] uppercase tracking-[0.14em] text-mist transition-all duration-300 group-hover:border-black/15 group-hover:text-ink"
+              >
+                {c}
+              </span>
+            ))}
+          </div>
+
+          <div className="mt-10 flex items-center gap-2 text-[12px] font-medium">
+            <span className="relative">
+              Read pillar
+              <span
+                className="absolute -bottom-0.5 left-0 h-px w-full origin-left scale-x-0 transition-transform duration-500 group-hover:scale-x-100"
+                style={{ background: p.color }}
+              />
+            </span>
+            <span className="transition-transform group-hover:translate-x-1">→</span>
+          </div>
+        </div>
+      </Tilt>
     </motion.article>
   );
 }
+
 
 export function Ecosystem() {
   return (
@@ -313,7 +337,11 @@ export function Future() {
     <Section id="future" eyebrow="12 · Future" index="The loop continues">
       <div className="mx-auto max-w-4xl text-center">
         <Reveal>
-          <Logo size={64} className="mx-auto" />
+          <div className="relative mx-auto h-20 w-20">
+            <span className="absolute inset-0 rounded-full border border-gold/40 animate-spin-slow" />
+            <span className="absolute inset-2 rounded-full border border-green/40" style={{ animation: "spin-slow 22s linear infinite reverse" }} />
+            <Logo size={64} className="absolute inset-2" />
+          </div>
         </Reveal>
         <WordReveal
           text="The work has no end. Every cycle returns stronger than the last."
@@ -325,22 +353,31 @@ export function Future() {
             of a regenerative civilization.
           </p>
           <div className="mt-12 flex flex-wrap items-center justify-center gap-3">
-            <a
-              href="#hero"
-              className="group relative overflow-hidden rounded-full bg-ink px-7 py-3.5 text-[13px] font-medium text-white transition-all hover:scale-[1.03]"
-            >
-              <span className="relative z-10">Join the mission</span>
-            </a>
-            <a
-              href="#research"
-              className="rounded-full border border-black/10 px-7 py-3.5 text-[13px] font-medium transition hover:border-black/30"
-            >
-              Read the field journal →
-            </a>
+            <Magnetic strength={0.4}>
+              <a
+                href="#hero"
+                data-magnetic
+                className="group relative inline-flex items-center gap-2 overflow-hidden rounded-full bg-ink px-7 py-3.5 text-[13px] font-medium text-white transition-all duration-300 hover:shadow-[0_22px_60px_-15px_rgba(13,187,99,0.6)]"
+              >
+                <span className="relative z-10">Join the mission</span>
+                <span className="relative z-10 transition-transform duration-300 group-hover:translate-x-1">→</span>
+                <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-green via-earth to-gold transition-transform duration-700 group-hover:translate-x-0" />
+              </a>
+            </Magnetic>
+            <Magnetic strength={0.3}>
+              <a
+                href="#research"
+                data-magnetic
+                className="group rounded-full border border-black/10 bg-white/60 px-7 py-3.5 text-[13px] font-medium backdrop-blur transition-all hover:border-black/30 hover:bg-white"
+              >
+                Read the field journal <span className="inline-block transition-transform duration-300 group-hover:translate-x-1">→</span>
+              </a>
+            </Magnetic>
           </div>
           <div className="mt-24 text-[11px] uppercase tracking-[0.32em] text-mist">
             Continue scrolling — the loop returns to its origin
           </div>
+
         </Reveal>
       </div>
     </Section>
