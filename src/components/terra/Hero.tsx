@@ -2,6 +2,8 @@
 import { motion } from "motion/react";
 import { Logo } from "./Logo";
 import { EnergyField } from "./EnergyField";
+import { Magnetic } from "./Interactive";
+
 
 export function Hero() {
   const headline = ["A", "regenerative", "operating", "system", "for", "the", "planet."];
