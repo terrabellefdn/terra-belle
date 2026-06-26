@@ -6,6 +6,7 @@ import { TopNav, SideTimeline } from "@/components/terra/Nav";
 import { IntroLoader } from "@/components/terra/Loader";
 import { EnergyDivider } from "@/components/terra/Divider";
 import { Hero } from "@/components/terra/Hero";
+import { FlowProvider } from "@/components/terra/FlowContext";
 import {
   PlanetChapter,
   EcosystemChapter,
