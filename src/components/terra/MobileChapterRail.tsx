@@ -152,7 +152,7 @@ export function MobileChapterRail() {
             />
           </span>
           <span className="min-w-0 flex-1">
-            <span className="block text-[10px] uppercase tracking-[0.22em] text-mist">Chapter {activeIdx + 1} / {SECTIONS.length}</span>
+            <span className="block text-[10px] uppercase tracking-[0.22em] text-ink/70">Chapter {activeIdx + 1} / {SECTIONS.length}</span>
             <span className="block truncate text-[14px] font-medium text-ink">{current.label}</span>
           </span>
           <span aria-hidden className="flex shrink-0 items-center gap-1">
@@ -202,7 +202,7 @@ export function MobileChapterRail() {
           <div className="mx-auto mt-3 h-1.5 w-12 rounded-full bg-ink/10" aria-hidden />
           <div className="flex items-center justify-between px-6 pt-4">
             <div>
-              <div className="text-[10px] uppercase tracking-[0.28em] text-mist">Chapter Navigator</div>
+              <div className="text-[10px] uppercase tracking-[0.28em] text-ink/70">Chapter Navigator</div>
               <div className="mt-1 font-display text-2xl leading-none">Jump to a chapter</div>
             </div>
             <button
@@ -261,7 +261,7 @@ export function MobileChapterRail() {
                     </span>
                     <span className="min-w-0 flex-1">
                       <span className="block truncate text-[15px] font-medium text-ink">{s.label}</span>
-                      <span className="block text-[11px] uppercase tracking-[0.22em] text-mist">
+                      <span className="block text-[11px] uppercase tracking-[0.22em] text-ink/70">
                         {isActive ? "Currently viewing" : isPast ? "Completed" : "Up next"}
                       </span>
                     </span>
