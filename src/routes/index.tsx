@@ -46,6 +46,7 @@ function Index() {
       <FlowProvider>
         <TopNav />
         <SideTimeline />
+        <MobileChapterRail />
 
         <main className="relative z-10">
           {/* 01 · Genesis */}
