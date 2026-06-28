@@ -8,8 +8,9 @@ import {
   WaterIcon,
   WindIcon,
   NetworkIcon,
-  GraphIcon,
+  ChartIcon,
 } from "@/components/terra/Icons";
+
 
 const VERTICALS = [
   {
