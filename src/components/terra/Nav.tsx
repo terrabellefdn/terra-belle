@@ -1,7 +1,9 @@
 "use client";
 import { useEffect, useRef, useState, type KeyboardEvent } from "react";
+import { Link } from "@tanstack/react-router";
 
 import { Logo } from "./Logo";
+
 
 export const SECTIONS = [
   { id: "genesis", label: "Genesis" },
@@ -43,41 +45,44 @@ export function TopNav() {
           boxShadow: scrolled ? "0 18px 40px -20px rgba(17,17,17,0.18)" : "var(--shadow-soft)",
         }}
       >
-        <a href="#genesis" data-magnetic className="group flex items-center gap-2">
+        <Link to="/" data-magnetic className="group flex items-center gap-2">
           <span className="relative">
             <Logo size={22} />
             <span className="absolute inset-0 rounded-full opacity-0 transition-opacity duration-500 group-hover:opacity-100"
                   style={{ boxShadow: "0 0 18px rgba(244,176,0,0.6)" }} />
           </span>
           <span className="text-[13px] font-medium tracking-tight">Terra Belle</span>
-        </a>
+        </Link>
         <span className="hidden h-4 w-px bg-black/10 sm:block" />
         <nav className="hidden items-center gap-5 text-[12.5px] text-mist sm:flex">
           {[
-            { id: "planet", label: "Planet" },
-            { id: "ecosystem", label: "Ecosystem" },
-            { id: "circular", label: "Circular" },
-            { id: "impact", label: "Impact" },
+            { to: "/planet", label: "Planet" },
+            { to: "/ecosystem", label: "Ecosystem" },
+            { to: "/circular", label: "Circular" },
+            { to: "/impact", label: "Impact" },
+            { to: "/verticals", label: "Verticals" },
           ].map((s) => (
-            <a
-              key={s.id}
-              href={`#${s.id}`}
+            <Link
+              key={s.to}
+              to={s.to}
               data-magnetic
+              activeProps={{ className: "text-ink" }}
               className="group relative transition hover:text-ink"
             >
               {s.label}
-              <span className="absolute -bottom-1 left-0 h-px w-full origin-left scale-x-0 bg-gradient-to-r from-gold via-green to-earth transition-transform duration-500 group-hover:scale-x-100" />
-            </a>
+              <span className="absolute -bottom-1 left-0 h-px w-full origin-left scale-x-0 bg-gradient-to-r from-gold via-green to-earth transition-transform duration-500 group-hover:scale-x-100 data-[status=active]:scale-x-100" />
+            </Link>
           ))}
         </nav>
-        <a
-          href="#collaboration"
+        <Link
+          to="/verticals"
           data-magnetic
           className="group relative overflow-hidden rounded-full bg-ink px-3.5 py-1.5 text-[12px] font-medium text-white transition-all duration-300 hover:scale-[1.04]"
         >
-          <span className="relative z-10">Join</span>
+          <span className="relative z-10">Explore</span>
           <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-gold via-green to-earth transition-transform duration-500 group-hover:translate-x-0" />
-        </a>
+        </Link>
+
       </div>
     </header>
   );
