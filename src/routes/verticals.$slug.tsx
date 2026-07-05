@@ -1,10 +1,11 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { useEffect, useRef } from "react";
 import { motion } from "motion/react";
-import { PageShell } from "@/components/terra/PageShell";
 import { Section, Reveal } from "@/components/terra/Section";
 import { Tilt } from "@/components/terra/Interactive";
 import { EnergyDivider } from "@/components/terra/Divider";
-import { getVertical, VERTICALS } from "@/lib/verticals-data";
+import { JourneyLoop } from "@/components/terra/JourneyLoop";
+import { getVertical } from "@/lib/verticals-data";
 
 export const Route = createFileRoute("/verticals/$slug")({
   loader: ({ params }) => {
@@ -15,7 +16,12 @@ export const Route = createFileRoute("/verticals/$slug")({
   head: ({ params }) => {
     const v = getVertical(params.slug);
     if (!v) {
-      return { meta: [{ title: "Vertical not found — Terra Belle" }, { name: "robots", content: "noindex" }] };
+      return {
+        meta: [
+          { title: "Vertical not found — Terra Belle" },
+          { name: "robots", content: "noindex" },
+        ],
+      };
     }
     return {
       meta: [
@@ -27,32 +33,54 @@ export const Route = createFileRoute("/verticals/$slug")({
     };
   },
   notFoundComponent: VerticalNotFound,
-  component: VerticalDetailPage,
+  component: VerticalDetail,
 });
 
 function VerticalNotFound() {
   return (
-    <PageShell eyebrow="Not Found" title="This vertical hasn't taken root yet.">
-      <Section id="not-found">
+    <Section id="not-found">
+      <p className="text-mist">
+        This vertical hasn't taken root yet.{" "}
         <Link to="/verticals" className="text-ink underline">
-          ← Back to all verticals
+          Back to all verticals
         </Link>
-      </Section>
-    </PageShell>
+      </p>
+    </Section>
   );
 }
 
-function VerticalDetailPage() {
+function VerticalDetail() {
   const { slug } = Route.useLoaderData();
   const v = getVertical(slug)!;
   const Icon = v.Icon;
-  const siblings = VERTICALS.filter((x) => x.slug !== v.slug);
+  const rootRef = useRef<HTMLDivElement>(null);
+
+  // On slug change, scroll the detail into view so the visitor sees the newly
+  // selected vertical — while the grid above stays intact.
+  useEffect(() => {
+    const el = rootRef.current;
+    if (!el) return;
+    const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    // Give the layout a beat to settle after the grid re-renders.
+    const id = window.setTimeout(() => {
+      el.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+    }, 60);
+    return () => window.clearTimeout(id);
+  }, [slug]);
 
   return (
-    <PageShell eyebrow={v.eyebrow} title={v.title} intro={v.summary}>
+    <div ref={rootRef} id={`vertical-${v.slug}`} aria-label={`${v.title} — detail`}>
+      <EnergyDivider />
+
       {/* Hero band */}
-      <Section id="hero">
-        <div className="relative overflow-hidden rounded-[2rem] border border-black/5 bg-white/80 p-10 backdrop-blur md:p-16">
+      <Section id={`hero-${v.slug}`} eyebrow={`${v.category} · Vertical`}>
+        <motion.div
+          key={v.slug}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+          className="relative overflow-hidden rounded-[2rem] border border-black/5 bg-white/85 p-10 backdrop-blur md:p-16"
+        >
           <div
             aria-hidden
             className="absolute -right-24 -top-24 h-80 w-80 rounded-full opacity-40 blur-3xl"
@@ -60,9 +88,10 @@ function VerticalDetailPage() {
           />
           <div
             aria-hidden
-            className="absolute -left-16 bottom--16 h-56 w-56 rounded-full opacity-20 blur-3xl"
+            className="absolute -left-16 -bottom-16 h-56 w-56 rounded-full opacity-20 blur-3xl"
             style={{ background: v.color }}
           />
+
           <div className="relative flex items-center gap-4">
             <span
               className="grid h-14 w-14 place-items-center rounded-2xl"
@@ -70,12 +99,15 @@ function VerticalDetailPage() {
             >
               <Icon size={28} color={v.color} />
             </span>
-            <span className="text-[11px] uppercase tracking-[0.28em] text-mist">
-              {v.category} · Vertical
-            </span>
+            <div>
+              <div className="text-[11px] uppercase tracking-[0.28em] text-mist">{v.eyebrow}</div>
+              <div className="mt-1 font-display text-[1.15rem] leading-tight tracking-tight">
+                {v.title}
+              </div>
+            </div>
           </div>
 
-          <p className="relative mt-8 max-w-3xl font-display text-[clamp(1.6rem,3.2vw,2.6rem)] leading-[1.1] tracking-[-0.01em] text-balance">
+          <p className="relative mt-8 max-w-3xl font-display text-[clamp(1.5rem,3vw,2.4rem)] leading-[1.1] tracking-[-0.01em] text-balance">
             {v.hero}
           </p>
 
@@ -96,149 +128,198 @@ function VerticalDetailPage() {
               </Reveal>
             ))}
           </div>
+        </motion.div>
+      </Section>
+
+      {/* Mission / Vision */}
+      <Section id={`purpose-${v.slug}`} eyebrow="Purpose">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+          <Reveal>
+            <div className="relative h-full overflow-hidden rounded-2xl border border-black/5 bg-white/80 p-8 backdrop-blur">
+              <div
+                aria-hidden
+                className="absolute left-0 top-0 h-full w-[3px]"
+                style={{ background: `linear-gradient(180deg, ${v.color}, transparent)` }}
+              />
+              <div className="text-[11px] uppercase tracking-[0.28em] text-mist">Mission</div>
+              <p className="mt-4 font-display text-[1.35rem] leading-snug tracking-tight text-ink/90">
+                {v.mission}
+              </p>
+            </div>
+          </Reveal>
+          <Reveal delay={0.08}>
+            <div className="relative h-full overflow-hidden rounded-2xl border border-black/5 bg-white/80 p-8 backdrop-blur">
+              <div
+                aria-hidden
+                className="absolute left-0 top-0 h-full w-[3px]"
+                style={{ background: `linear-gradient(180deg, ${v.color}, transparent)` }}
+              />
+              <div className="text-[11px] uppercase tracking-[0.28em] text-mist">Vision</div>
+              <p className="mt-4 font-display text-[1.35rem] leading-snug tracking-tight text-ink/90">
+                {v.vision}
+              </p>
+            </div>
+          </Reveal>
         </div>
       </Section>
 
-      {/* Phases — the living cycle */}
-      <Section id="phases" eyebrow="The Cycle" index={`0${v.phases.length}`}>
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-          {v.phases.map((p, i) => (
-            <Reveal key={p.name} delay={i * 0.08}>
+      {/* Goals + Drives */}
+      <Section id={`goals-${v.slug}`} eyebrow="Goals & Drives">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+          <div className="rounded-2xl border border-black/5 bg-white/80 p-8 backdrop-blur">
+            <div className="text-[11px] uppercase tracking-[0.28em] text-mist">Strategic goals</div>
+            <ol className="mt-6 space-y-4">
+              {v.goals.map((g, i) => (
+                <Reveal key={g} delay={i * 0.06}>
+                  <li className="flex items-start gap-4">
+                    <span
+                      className="mt-1 grid h-7 w-7 shrink-0 place-items-center rounded-full text-[11px] font-medium"
+                      style={{ background: v.color + "18", color: v.color }}
+                    >
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <span className="text-[14.5px] leading-relaxed text-ink/85">{g}</span>
+                  </li>
+                </Reveal>
+              ))}
+            </ol>
+          </div>
+
+          <div className="rounded-2xl border border-black/5 bg-white/80 p-8 backdrop-blur">
+            <div className="text-[11px] uppercase tracking-[0.28em] text-mist">What drives it</div>
+            <ul className="mt-6 space-y-3">
+              {v.drives.map((d, i) => (
+                <Reveal key={d} delay={i * 0.06}>
+                  <li className="flex items-start gap-3">
+                    <motion.span
+                      aria-hidden
+                      className="mt-[7px] inline-block h-1.5 w-1.5 shrink-0 rounded-full"
+                      style={{ background: v.color, boxShadow: `0 0 8px ${v.color}` }}
+                      animate={{ opacity: [0.5, 1, 0.5] }}
+                      transition={{ duration: 3, repeat: Infinity, delay: i * 0.4 }}
+                    />
+                    <span className="text-[14px] leading-relaxed text-ink/85">{d}</span>
+                  </li>
+                </Reveal>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </Section>
+
+      {/* Projects */}
+      <Section id={`projects-${v.slug}`} eyebrow="Active Projects" index={`0${v.projects.length}`}>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {v.projects.map((p, i) => (
+            <Reveal key={p.id} delay={(i % 3) * 0.08}>
               <Tilt>
-                <div className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-black/5 bg-white/85 p-7 backdrop-blur">
+                <article className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-black/5 bg-white/85 p-7 backdrop-blur">
                   <div
                     aria-hidden
                     className="absolute left-0 top-0 h-full w-[3px]"
-                    style={{
-                      background: `linear-gradient(180deg, ${v.color}, transparent)`,
-                    }}
+                    style={{ background: `linear-gradient(180deg, ${v.color}, transparent)` }}
                   />
                   <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.24em] text-mist">
-                    <span>Phase {String(i + 1).padStart(2, "0")}</span>
-                    <motion.span
-                      aria-hidden
-                      className="h-1.5 w-1.5 rounded-full"
-                      style={{ background: v.color }}
-                      animate={{ opacity: [0.4, 1, 0.4] }}
-                      transition={{ duration: 3, repeat: Infinity, delay: i * 0.4 }}
-                    />
+                    <span>{p.location ?? "Global"}</span>
+                    <span
+                      className="inline-flex items-center gap-1.5 rounded-full px-2 py-0.5"
+                      style={{ background: v.color + "18", color: v.color }}
+                    >
+                      <span
+                        className="h-1 w-1 rounded-full"
+                        style={{ background: v.color, boxShadow: `0 0 6px ${v.color}` }}
+                      />
+                      {p.status}
+                    </span>
                   </div>
-                  <h3 className="mt-4 font-display text-[1.35rem] leading-tight tracking-tight">
+                  <h3 className="mt-4 font-display text-[1.2rem] leading-tight tracking-tight">
                     {p.name}
                   </h3>
-                  <p className="mt-3 text-[13.5px] leading-relaxed text-mist">{p.detail}</p>
-                </div>
+                  <p className="mt-3 flex-1 text-[13.5px] leading-relaxed text-mist">{p.detail}</p>
+
+                  {/* Project-level CTA */}
+                  <div className="mt-6">
+                    <a
+                      href={`mailto:partners@terrabelle.org?subject=${encodeURIComponent(
+                        `Project partnership — ${p.name}`,
+                      )}`}
+                      data-magnetic
+                      className="group inline-flex items-center gap-1.5 text-[12px] font-medium text-ink/80 transition hover:text-ink"
+                    >
+                      Partner on this project
+                      <span className="transition-transform group-hover:translate-x-0.5">→</span>
+                    </a>
+                  </div>
+                </article>
               </Tilt>
             </Reveal>
           ))}
         </div>
       </Section>
 
-      {/* Bridges + Partners */}
-      <Section id="bridges" eyebrow="Interconnections">
-        <div className="grid grid-cols-1 gap-10 md:grid-cols-2">
-          <div>
-            <div className="text-[11px] uppercase tracking-[0.28em] text-mist">
-              Bridges to other verticals
-            </div>
-            <ul className="mt-6 space-y-3">
-              {v.bridges.map((b) => (
-                <li key={b.slug}>
-                  <Link
-                    to="/verticals/$slug"
-                    params={{ slug: b.slug }}
-                    className="group flex items-start gap-3 rounded-xl border border-black/5 bg-white/70 p-5 backdrop-blur transition-all duration-300 hover:border-black/20 hover:shadow-[0_18px_50px_-25px_rgba(17,17,17,0.3)]"
-                  >
-                    <span
-                      className="mt-1.5 inline-block h-1.5 w-6 rounded-full transition-all duration-500 group-hover:w-10"
-                      style={{ background: v.color, boxShadow: `0 0 10px ${v.color}` }}
-                    />
-                    <span className="flex-1 text-[14px] text-ink/85">{b.label}</span>
-                    <span className="text-mist transition-transform group-hover:translate-x-1">→</span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div>
-            <div className="text-[11px] uppercase tracking-[0.28em] text-mist">Working with</div>
-            <ul className="mt-6 flex flex-wrap gap-2">
-              {v.partners.map((p) => (
-                <li
-                  key={p}
-                  className="rounded-full border border-black/10 bg-white/70 px-4 py-2 text-[12.5px] text-ink/80 backdrop-blur"
-                >
-                  {p}
-                </li>
-              ))}
-            </ul>
-            <div className="mt-10 rounded-2xl border border-black/5 bg-white/70 p-6 backdrop-blur">
-              <div className="text-[11px] uppercase tracking-[0.28em] text-mist">On the ground</div>
-              <ul className="mt-4 space-y-2 text-[13.5px] text-ink/85">
-                {v.points.map((p) => (
-                  <li key={p} className="flex items-start gap-2">
-                    <span
-                      className="mt-[7px] inline-block h-1.5 w-1.5 shrink-0 rounded-full"
-                      style={{ background: v.color, boxShadow: `0 0 8px ${v.color}` }}
-                    />
-                    <span>{p}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
+      {/* Partners */}
+      <Section id={`partners-${v.slug}`} eyebrow="Aligned institutions">
+        <div className="flex flex-wrap gap-2">
+          {v.partners.map((p) => (
+            <span
+              key={p}
+              className="rounded-full border border-black/10 bg-white/70 px-4 py-2 text-[12.5px] text-ink/80 backdrop-blur"
+            >
+              {p}
+            </span>
+          ))}
         </div>
       </Section>
 
-      <EnergyDivider />
-
-      {/* Sibling verticals */}
-      <Section id="siblings" eyebrow="Continue the loop">
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-          {siblings.slice(0, 3).map((s) => {
-            const SIcon = s.Icon;
-            return (
-              <Link
-                key={s.slug}
-                to="/verticals/$slug"
-                params={{ slug: s.slug }}
-                className="group relative flex flex-col overflow-hidden rounded-2xl border border-black/5 bg-white/80 p-6 backdrop-blur transition-shadow hover:shadow-[0_24px_60px_-30px_rgba(17,17,17,0.3)]"
+      {/* CTAs — vertical-level */}
+      <Section id={`join-${v.slug}`} eyebrow="Join the vertical">
+        <div className="relative overflow-hidden rounded-[2rem] border border-black/5 bg-white/85 p-10 backdrop-blur md:p-14">
+          <div
+            aria-hidden
+            className="absolute inset-0 opacity-60"
+            style={{
+              background: `radial-gradient(80% 60% at 20% 0%, ${v.color}18 0%, transparent 60%)`,
+            }}
+          />
+          <div className="relative flex flex-col items-start justify-between gap-8 md:flex-row md:items-end">
+            <div className="max-w-xl">
+              <div className="text-[11px] uppercase tracking-[0.28em] text-mist">Partner with us</div>
+              <div className="mt-3 font-display text-[clamp(1.6rem,3vw,2.4rem)] leading-tight tracking-tight">
+                Move {v.short} forward — as an institution, funder, researcher or community.
+              </div>
+              <p className="mt-4 text-[14px] text-mist">
+                Choose the depth of collaboration. Anchor the whole vertical, or plug into a single
+                project already in motion.
+              </p>
+            </div>
+            <div className="flex flex-wrap items-center gap-3">
+              <a
+                href={`mailto:partners@terrabelle.org?subject=${encodeURIComponent(
+                  `Vertical partnership — ${v.title}`,
+                )}`}
+                data-magnetic
+                className="group relative inline-flex items-center gap-2 overflow-hidden rounded-full bg-ink px-6 py-3 text-[12.5px] font-medium text-white transition-all duration-300 hover:shadow-[0_22px_60px_-15px_rgba(244,176,0,0.6)]"
               >
-                <div
-                  aria-hidden
-                  className="absolute -right-10 -top-10 h-28 w-28 rounded-full opacity-25 blur-2xl transition-opacity group-hover:opacity-60"
-                  style={{ background: s.color }}
-                />
-                <div className="relative flex items-center gap-3">
-                  <span
-                    className="grid h-9 w-9 place-items-center rounded-xl"
-                    style={{ background: s.color + "18" }}
-                  >
-                    <SIcon size={18} color={s.color} />
-                  </span>
-                  <span className="text-[10px] uppercase tracking-[0.24em] text-mist">
-                    {s.category}
-                  </span>
-                </div>
-                <div className="relative mt-4 font-display text-[1.15rem] leading-tight">
-                  {s.short}
-                </div>
-                <div className="relative mt-4 text-[10px] uppercase tracking-[0.24em] text-ink/60 transition-transform group-hover:translate-x-1">
-                  Enter →
-                </div>
-              </Link>
-            );
-          })}
-        </div>
-        <div className="mt-10">
-          <Link
-            to="/verticals"
-            className="inline-flex items-center gap-2 text-[12.5px] font-medium text-ink/70 hover:text-ink"
-          >
-            ← All verticals
-          </Link>
+                <span className="relative z-10">Partner at vertical level</span>
+                <span className="relative z-10 transition-transform group-hover:translate-x-1">→</span>
+                <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-gold via-green to-earth transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-0" />
+              </a>
+              <a
+                href={`#projects-${v.slug}`}
+                data-magnetic
+                className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white/70 px-5 py-2.5 text-[12.5px] font-medium backdrop-blur transition hover:border-black/25"
+              >
+                Or pick a project ↑
+              </a>
+            </div>
+          </div>
         </div>
       </Section>
-    </PageShell>
+
+      {/* Journey Loop — motion language mirrors the chapter rail */}
+      <Section id={`journey-${v.slug}`} eyebrow="Continue the loop">
+        <JourneyLoop active={v} />
+      </Section>
+    </div>
   );
 }

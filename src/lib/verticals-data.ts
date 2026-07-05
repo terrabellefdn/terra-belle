@@ -15,6 +15,14 @@ export type VerticalCategory =
   | "Materials"
   | "Community";
 
+export type VerticalProject = {
+  id: string;
+  name: string;
+  location?: string;
+  status: "Live" | "Piloting" | "R&D" | "Scaling";
+  detail: string;
+};
+
 export type Vertical = {
   slug: string;
   title: string;
@@ -24,8 +32,13 @@ export type Vertical = {
   color: string;
   Icon: typeof LeafIcon;
   summary: string;
-  points: string[];
+  points?: string[];
   hero: string;
+  mission: string;
+  vision: string;
+  goals: string[];
+  drives: string[];
+  projects: VerticalProject[];
   metrics: { value: string; label: string }[];
   phases: { name: string; detail: string }[];
   partners: string[];
@@ -54,10 +67,24 @@ export const VERTICALS: Vertical[] = [
     summary:
       "On-chain Measurement, Reporting and Verification for high-integrity carbon credits — pairing satellite + LiDAR biomass models with smart-contract issuance so every tonne of CO₂ removed is traceable, audit-grade, and double-counting proof.",
     hero: "A forest that keeps its own ledger. Every tree measured, every tonne witnessed, every credit accountable to the biome that produced it.",
-    points: [
-      "Tokenised carbon credits backed by parcel-level reforestation",
-      "Open MRV pipeline auditable by partners and the public",
-      "Community-owned reforestation sites with revenue share",
+    mission:
+      "Rebuild trust in carbon markets by making every removal transparent, verifiable, and inseparable from the community that grew it.",
+    vision:
+      "A global registry where forests, wetlands and soils speak for themselves — and where regeneration is the most valuable asset on earth.",
+    goals: [
+      "Bring 10 million trees under continuous on-chain MRV by 2030",
+      "Retire 1M tCO₂e of high-integrity credits with zero double-counting",
+      "Route 50% of credit revenue back to local stewards",
+    ],
+    drives: [
+      "Ending greenwashing with radical transparency",
+      "Empowering community land stewards as first-class market actors",
+      "Making biodiversity a measurable, financeable outcome",
+    ],
+    projects: [
+      { id: "mrv-belize", name: "Mangrove MRV — Belize", location: "Belize", status: "Live", detail: "Satellite + drone biomass verification across coastal mangrove restoration parcels." },
+      { id: "mrv-atlantic", name: "Atlantic Forest Ledger", location: "Brazil", status: "Piloting", detail: "Parcel-level tokenised credits with cooperative revenue share." },
+      { id: "mrv-registry", name: "Open Retirement Registry", status: "Scaling", detail: "Public ledger closing the loop between issuance and retirement." },
     ],
     metrics: [
       { value: "1.4M", label: "Trees under active MRV" },
@@ -88,10 +115,24 @@ export const VERTICALS: Vertical[] = [
     summary:
       "Long-horizon research into liquid-hydrogen turbines and hydro-electrically produced green H₂ fuel chains — designing the pathway to zero-emission flight by powering electrolysis from renewable hydroelectric grids.",
     hero: "Rivers becoming runways. A fuel chain where mountain water becomes hydrogen, and hydrogen becomes flight without a trace.",
-    points: [
-      "Green-hydrogen turbine prototypes for regional aviation",
-      "Hydroelectric → electrolysis → cryogenic fuel supply chain",
-      "Co-development with university aerospace labs",
+    mission:
+      "Prove that regional aviation can run on green hydrogen produced from surplus hydroelectric power — end to end, exhaust to source.",
+    vision:
+      "A commercial fleet whose only emission is water vapour, fuelled by rivers that would otherwise curtail.",
+    goals: [
+      "Certify a regional-class H₂ turbine airframe by the early 2030s",
+      "Close a fully renewable H₂ fuel chain at two pilot airfields",
+      "Publish open blade and combustor geometry for university replication",
+    ],
+    drives: [
+      "Decarbonising the hardest-to-abate transport sector",
+      "Turning curtailed hydro into a strategic energy carrier",
+      "Building sovereign green-fuel capability outside fossil supply chains",
+    ],
+    projects: [
+      { id: "h2-turbine-mk3", name: "H₂ Turbine — Mk III", status: "R&D", detail: "Third-generation combustor achieving 92% cycle efficiency in ground test." },
+      { id: "hydro-electrolyser", name: "Andean Electrolyser Node", location: "Chile", status: "Piloting", detail: "5 MW electrolyser on curtailed hydro producing cryogenic H₂." },
+      { id: "cryo-airfield", name: "Cryogenic Airfield Handling", status: "R&D", detail: "Ground handling and safety systems for liquid-H₂ refuelling." },
     ],
     metrics: [
       { value: "3", label: "Turbine prototypes in test" },
@@ -121,10 +162,24 @@ export const VERTICALS: Vertical[] = [
     summary:
       "Community-scale solar, micro-hydro and storage networks deployed where they multiply impact — electrifying rural economies while feeding surplus generation back into national grids.",
     hero: "A grid that behaves like a mycelium — many small sources, always sharing, always adapting to where the light is needed most.",
-    points: [
-      "Microgrid deployments with local cooperative ownership",
-      "Battery and pumped-storage to firm intermittent supply",
-      "Carbon-aware load scheduling powered by the AI layer",
+    mission:
+      "Put clean, dispatchable power in the hands of the communities who need it most — and let their surplus lift everyone else.",
+    vision:
+      "A planet-scale mesh of cooperative microgrids where the last kilowatt is as green as the first.",
+    goals: [
+      "Deploy 250 MW of community-owned generation by 2032",
+      "Electrify 100k off-grid households",
+      "Recover 80% of otherwise-curtailed renewable output",
+    ],
+    drives: [
+      "Energy sovereignty for rural and frontier communities",
+      "Firming intermittent renewables with local storage",
+      "Turning curtailment from waste into feedstock for other verticals",
+    ],
+    projects: [
+      { id: "microgrid-belize", name: "Toledo Microgrid Cluster", location: "Belize", status: "Live", detail: "Solar + storage cooperative serving eight villages." },
+      { id: "hydro-firming", name: "Micro-Hydro Firming Network", status: "Scaling", detail: "Run-of-river units firming solar output with pumped storage." },
+      { id: "load-scheduler", name: "Carbon-Aware Load Scheduler", status: "Piloting", detail: "AI shifts community demand to the greenest hours of the day." },
     ],
     metrics: [
       { value: "27 MW", label: "Distributed capacity live" },
@@ -154,10 +209,24 @@ export const VERTICALS: Vertical[] = [
     summary:
       "Modular direct-air-capture units paired with mineralisation and bio-sequestration to remove legacy CO₂ from the atmosphere — engineered to be powered exclusively by surplus renewable energy.",
     hero: "The atmosphere gets its lungs back. Machines that breathe in the last century's emissions and turn them into stone.",
-    points: [
-      "Sorbent-based DAC with mineralised, permanent storage",
-      "Co-located with renewables to use otherwise-curtailed power",
-      "Removed tonnes feed the same MRV registry as forestry",
+    mission:
+      "Remove legacy CO₂ from the air at gigatonne relevance — powered exclusively by renewable surplus and stored for geologic time.",
+    vision:
+      "A planet whose atmospheric carbon curve finally bends back down, one mineralised tonne at a time.",
+    goals: [
+      "Reach 100 kt/yr removal capacity across modular sites by 2030",
+      "Achieve <$150/t removed at scale using curtailed renewables",
+      "Certify every tonne through the same open MRV registry as forestry",
+    ],
+    drives: [
+      "Repairing atmospheric damage that cannot wait for emission cuts alone",
+      "Making removal accountable through the same registry as nature-based credits",
+      "Coupling atmospheric repair to renewable surplus",
+    ],
+    projects: [
+      { id: "dac-mod-01", name: "DAC Module 01 — Iceland", location: "Iceland", status: "Live", detail: "Sorbent contactor with basalt mineralisation, running on geothermal." },
+      { id: "dac-basalt-scan", name: "Basalt Storage Atlas", status: "R&D", detail: "Global survey of reactive basalt reservoirs for permanent CO₂ storage." },
+      { id: "dac-registry", name: "Removal Registry Integration", status: "Scaling", detail: "Every removed tonne issued through the shared MRV pipeline." },
     ],
     metrics: [
       { value: "1,200 t", label: "CO₂ removed to date" },
@@ -187,10 +256,24 @@ export const VERTICALS: Vertical[] = [
     summary:
       "Low-clinker cement, carbon-cured mortars and bio-aggregate composites that sequester CO₂ inside the buildings we already need — turning the construction sector from the world's largest emitter into a carbon sink.",
     hero: "Cities that store carbon in their walls. Every beam a reservoir, every façade a leaf.",
-    points: [
-      "Carbon-mineralising mortar and CO₂-cured precast",
-      "Hempcrete, mycelium and bio-composite structural panels",
-      "Embodied-carbon labelling integrated with the MRV stack",
+    mission:
+      "Turn the built environment from the planet's largest emitter into one of its most reliable carbon sinks.",
+    vision:
+      "Every new building specified with a negative embodied-carbon budget by default.",
+    goals: [
+      "Ship carbon-mineralising mortar and precast to 100 projects by 2030",
+      "Cut embodied carbon 50% versus conventional concrete baselines",
+      "Publish open specifications adopted by regional building codes",
+    ],
+    drives: [
+      "Redirecting the largest material flow on earth toward sequestration",
+      "Coupling construction demand to DAC and industrial CO₂ streams",
+      "Restoring bio-based materials as first-class structural options",
+    ],
+    projects: [
+      { id: "mortar-precast", name: "CO₂-Cured Precast Line", status: "Scaling", detail: "Precast facility injecting DAC-derived CO₂ during curing." },
+      { id: "hempcrete", name: "Hempcrete Housing Pilot", location: "Portugal", status: "Piloting", detail: "Six-home development with bio-composite structural panels." },
+      { id: "embodied-label", name: "Embodied Carbon Label", status: "R&D", detail: "Building-scale carbon label wired to the shared MRV registry." },
     ],
     metrics: [
       { value: "-38%", label: "Embodied carbon vs. baseline" },
@@ -220,10 +303,24 @@ export const VERTICALS: Vertical[] = [
     summary:
       "Façade-integrated vertical gardens, rooftop food forests and modular living walls that cool cities, clean air, restore pollinators and shorten food supply chains — biology returned to the centre of urban design.",
     hero: "Buildings that breathe. Streets that shade themselves. Pollinators that find a corridor where there used to be concrete.",
-    points: [
-      "Modular hydroponic and soil-substrate wall systems",
-      "Native-species planting plans designed for local pollinators",
-      "Cooling, air-quality and biodiversity gains measured live",
+    mission:
+      "Return biology to the centre of urban design — cooling cities, cleaning air and restoring pollinators one façade at a time.",
+    vision:
+      "Cities where every building contributes measurable biodiversity, cooling and food to its neighbourhood.",
+    goals: [
+      "Green 500 building façades across five cities by 2032",
+      "Establish continuous pollinator corridors in each pilot neighbourhood",
+      "Cut local surface temperatures by 3–5°C at greened sites",
+    ],
+    drives: [
+      "Reversing the urban heat-island effect",
+      "Reconnecting fragmented pollinator habitat",
+      "Shortening urban food supply chains at street scale",
+    ],
+    projects: [
+      { id: "facade-lisbon", name: "Lisbon Façade Pilot", location: "Portugal", status: "Live", detail: "Modular hydroponic walls across a public-housing block." },
+      { id: "pollinator-corridor", name: "Pollinator Corridor 01", status: "Piloting", detail: "Neighbourhood-scale native planting network connecting six greened buildings." },
+      { id: "rooftop-forest", name: "Rooftop Food Forest", status: "Scaling", detail: "Edible perennials on institutional rooftops feeding local kitchens." },
     ],
     metrics: [
       { value: "-4.2°C", label: "Local façade cooling" },
@@ -253,10 +350,24 @@ export const VERTICALS: Vertical[] = [
     summary:
       "In partnership with WildTracks, regenerative conservation-tourism experiences that channel visitor revenue directly into rewilding, primate and manatee rehabilitation, and protected-area stewardship in Belize and beyond.",
     hero: "Travel as stewardship. Every visitor becomes a funder of the rehabilitation happening quietly in the mangroves.",
-    points: [
-      "Low-impact lodges co-managed with conservation partners",
-      "Visitor fees fund rehabilitation of rescued wildlife",
-      "Researcher and volunteer placements alongside guests",
+    mission:
+      "Make every visitor a direct funder of wildlife rehabilitation and protected-area stewardship — with zero extraction and full transparency.",
+    vision:
+      "A model of conservation tourism replicated across biomes, where travel actively rebuilds the ecosystems it visits.",
+    goals: [
+      "Fully fund WildTracks primate & manatee rehabilitation year-round",
+      "Open two new low-impact lodges inside co-managed reserves",
+      "Route 100% of visitor fees into conservation and community budgets",
+    ],
+    drives: [
+      "Turning tourism from extractive to regenerative",
+      "Giving rescued wildlife a real path back to the wild",
+      "Funding conservation in perpetuity through visitor participation",
+    ],
+    projects: [
+      { id: "wt-primate", name: "Primate Rehabilitation Centre", location: "Sarteneja, Belize", status: "Live", detail: "Long-running rehabilitation and release programme for rescued primates." },
+      { id: "wt-manatee", name: "Manatee Rescue & Release", location: "Northern Belize", status: "Live", detail: "Veterinary rescue, rehabilitation and monitored release of Antillean manatees." },
+      { id: "wt-lodge", name: "Regenerative Lodge Programme", status: "Piloting", detail: "Low-impact lodges co-managed with local conservation partners." },
     ],
     metrics: [
       { value: "94", label: "Rescued primates rehabilitated" },
@@ -278,3 +389,4 @@ export const VERTICALS: Vertical[] = [
 ];
 
 export const getVertical = (slug: string) => VERTICALS.find((v) => v.slug === slug);
+export const getVerticalIndex = (slug: string) => VERTICALS.findIndex((v) => v.slug === slug);

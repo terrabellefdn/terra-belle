@@ -1,6 +1,7 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
+import { Link, useMatches } from "@tanstack/react-router";
 import { PageShell } from "@/components/terra/PageShell";
 import { Section, Reveal } from "@/components/terra/Section";
 import { Tilt } from "@/components/terra/Interactive";
@@ -23,22 +24,39 @@ export const Route = createFileRoute("/verticals")({
       },
     ],
   }),
-  component: VerticalsPage,
+  component: VerticalsLayout,
 });
 
-function VerticalsPage() {
-  const [active, setActive] = useState<VerticalCategory | "All">("All");
+/**
+ * Layout for /verticals and /verticals/$slug.
+ *
+ * The verticals homepage (intro + filter + grid) is ALWAYS rendered so that
+ * landing on a slug URL still opens on the verticals homepage — the child
+ * <Outlet /> renders the immersive detail below the grid while the address
+ * bar reflects the chosen vertical.
+ */
+function VerticalsLayout() {
+  const matches = useMatches();
+  const activeSlug = useMemo(() => {
+    for (const m of matches) {
+      const p = m.params as { slug?: string };
+      if (p?.slug) return p.slug;
+    }
+    return null;
+  }, [matches]);
+
+  const [filter, setFilter] = useState<VerticalCategory | "All">("All");
 
   const filtered = useMemo(
-    () => (active === "All" ? VERTICALS : VERTICALS.filter((v) => v.category === active)),
-    [active],
+    () => (filter === "All" ? VERTICALS : VERTICALS.filter((v) => v.category === filter)),
+    [filter],
   );
 
   return (
     <PageShell
       eyebrow="Operating Facets"
       title="The Verticals"
-      intro="Each vertical is an independent engine of regeneration — and a node in the same circular system. Filter by domain, then step inside any facet to see how it breathes."
+      intro="Each vertical is an independent engine of regeneration — and a node in the same circular system. Filter by domain, step inside any facet, then follow the journey loop through the whole ecosystem."
     >
       <Section id="verticals-grid">
         {/* Filter rail */}
@@ -48,7 +66,7 @@ function VerticalsPage() {
           className="mb-12 flex flex-wrap items-center gap-2"
         >
           {CATEGORIES.map((cat) => {
-            const isActive = cat === active;
+            const isActive = cat === filter;
             const count =
               cat === "All" ? VERTICALS.length : VERTICALS.filter((v) => v.category === cat).length;
             return (
@@ -56,7 +74,7 @@ function VerticalsPage() {
                 key={cat}
                 role="tab"
                 aria-selected={isActive}
-                onClick={() => setActive(cat)}
+                onClick={() => setFilter(cat)}
                 data-magnetic
                 className={`group relative inline-flex items-center gap-2 rounded-full border px-4 py-2 text-[12.5px] font-medium transition-all duration-500 ${
                   isActive
@@ -67,7 +85,7 @@ function VerticalsPage() {
                 {isActive && (
                   <motion.span
                     layoutId="filter-active-dot"
-                    className="h-1.5 w-1.5 rounded-full bg-gold shadow-[0_0_8px_var(--tw-shadow-color)] shadow-gold"
+                    className="h-1.5 w-1.5 rounded-full bg-gold"
                   />
                 )}
                 <span>{cat}</span>
@@ -88,6 +106,7 @@ function VerticalsPage() {
           <AnimatePresence mode="popLayout">
             {filtered.map((v, i) => {
               const Icon = v.Icon;
+              const isSelected = activeSlug === v.slug;
               return (
                 <motion.div
                   key={v.slug}
@@ -102,11 +121,18 @@ function VerticalsPage() {
                       to="/verticals/$slug"
                       params={{ slug: v.slug }}
                       data-magnetic
-                      className="group relative flex h-full flex-col overflow-hidden rounded-3xl border border-black/5 bg-white/85 p-8 backdrop-blur transition-shadow duration-500 hover:shadow-[0_30px_70px_-30px_rgba(17,17,17,0.28)]"
+                      aria-current={isSelected ? "page" : undefined}
+                      className={`group relative flex h-full flex-col overflow-hidden rounded-3xl border p-8 backdrop-blur transition-all duration-500 ${
+                        isSelected
+                          ? "border-ink/20 bg-white shadow-[0_30px_70px_-30px_rgba(17,17,17,0.35)]"
+                          : "border-black/5 bg-white/85 hover:shadow-[0_30px_70px_-30px_rgba(17,17,17,0.25)]"
+                      }`}
                     >
                       <div
                         aria-hidden
-                        className="absolute -right-16 -top-16 h-40 w-40 rounded-full opacity-25 blur-3xl transition-opacity duration-500 group-hover:opacity-70"
+                        className={`absolute -right-16 -top-16 h-40 w-40 rounded-full blur-3xl transition-opacity duration-500 ${
+                          isSelected ? "opacity-70" : "opacity-25 group-hover:opacity-60"
+                        }`}
                         style={{ background: v.color }}
                       />
                       <div className="relative flex items-center gap-3">
@@ -129,18 +155,6 @@ function VerticalsPage() {
                         {v.summary}
                       </p>
 
-                      <ul className="relative mt-6 space-y-2 text-[13px] text-ink/80">
-                        {v.points.map((p) => (
-                          <li key={p} className="flex items-start gap-2">
-                            <span
-                              className="mt-[7px] inline-block h-1.5 w-1.5 shrink-0 rounded-full"
-                              style={{ background: v.color, boxShadow: `0 0 8px ${v.color}` }}
-                            />
-                            <span>{p}</span>
-                          </li>
-                        ))}
-                      </ul>
-
                       <div
                         className="relative mt-auto flex items-center justify-between pt-8 text-[10px] uppercase tracking-[0.24em]"
                         style={{ color: v.color }}
@@ -153,7 +167,7 @@ function VerticalsPage() {
                           {v.category}
                         </span>
                         <span className="inline-flex items-center gap-1 text-ink/60 transition-transform duration-300 group-hover:translate-x-1">
-                          Enter →
+                          {isSelected ? "Viewing ↓" : "Enter →"}
                         </span>
                       </div>
                     </Link>
@@ -170,6 +184,9 @@ function VerticalsPage() {
           </Reveal>
         )}
       </Section>
+
+      {/* Detail slot — filled by /verticals/$slug */}
+      <Outlet />
     </PageShell>
   );
 }
