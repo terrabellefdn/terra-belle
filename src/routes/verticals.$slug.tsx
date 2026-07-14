@@ -303,17 +303,18 @@ function VerticalDetail() {
               </p>
             </div>
             <div className="flex flex-wrap items-center gap-3">
-              <a
-                href={`mailto:partners@terrabelle.org?subject=${encodeURIComponent(
-                  `Vertical partnership — ${v.title}`,
-                )}`}
+              <button
+                type="button"
+                onClick={() => openApply({ kind: "vertical", vertical: v })}
                 data-magnetic
+                aria-haspopup="dialog"
+                aria-controls="partner-apply-dialog"
                 className="group relative inline-flex items-center gap-2 overflow-hidden rounded-full bg-ink px-6 py-3 text-[12.5px] font-medium text-white transition-all duration-300 hover:shadow-[0_22px_60px_-15px_rgba(244,176,0,0.6)]"
               >
                 <span className="relative z-10">Partner at vertical level</span>
                 <span className="relative z-10 transition-transform group-hover:translate-x-1">→</span>
                 <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-gold via-green to-earth transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-0" />
-              </a>
+              </button>
               <a
                 href={`#projects-${v.slug}`}
                 data-magnetic
