@@ -246,16 +246,19 @@ function VerticalDetail() {
 
                   {/* Project-level CTA */}
                   <div className="mt-6">
-                    <a
-                      href={`mailto:partners@terrabelle.org?subject=${encodeURIComponent(
-                        `Project partnership — ${p.name}`,
-                      )}`}
+                    <button
+                      type="button"
+                      onClick={() =>
+                        openApply({ kind: "project", vertical: v, project: p })
+                      }
                       data-magnetic
+                      aria-haspopup="dialog"
+                      aria-controls="partner-apply-dialog"
                       className="group inline-flex items-center gap-1.5 text-[12px] font-medium text-ink/80 transition hover:text-ink"
                     >
                       Partner on this project
                       <span className="transition-transform group-hover:translate-x-0.5">→</span>
-                    </a>
+                    </button>
                   </div>
                 </article>
               </Tilt>
