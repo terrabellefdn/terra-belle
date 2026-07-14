@@ -124,10 +124,15 @@ async def verticals_scenes(browser):
     page = await prep_page(ctx, f"{BASE}/verticals/web3-mrv")
     await page.wait_for_selector('section[aria-label="Journey through connected verticals"]',
                                  timeout=15000)
-    await page.wait_for_timeout(500)
+    await page.wait_for_load_state("networkidle")
+    await page.wait_for_timeout(1200)
 
-    # Hero band
+    # Hero band — scroll to top and lock layout before capture
+    await page.evaluate("window.scrollTo(0,0)")
+    await page.wait_for_timeout(400)
     hero = page.locator('[id="hero-web3-mrv"]')
+    await hero.scroll_into_view_if_needed()
+    await page.wait_for_timeout(400)
     compare("vertical_hero_web3", await cap(hero, "vertical_hero_web3"))
 
     # JourneyLoop default
