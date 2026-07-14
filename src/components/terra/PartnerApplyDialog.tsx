@@ -78,7 +78,7 @@ const empty: FormValues = {
   consent: false,
 };
 
-const CONTRIBUTIONS: { value: FormValues["contribution"]; label: string }[] = [
+const CONTRIBUTIONS: { value: string; label: string }[] = [
   { value: "funding", label: "Funding" },
   { value: "research", label: "Research" },
   { value: "operations", label: "Operations" },
