@@ -8,6 +8,7 @@ import { CircularFlow } from "./CircularFlow";
 import { CountUp } from "./CountUp";
 import { PartnerConstellation } from "./Constellation";
 import { FLOWS, useFlow } from "./FlowContext";
+import { OrganicBackdrop } from "./OrganicBackdrop";
 
 /** Top-of-chapter indicator that lights up when a CircularFlow is energising this chapter. */
 function FlowAccent({ chapter }: { chapter: string }) {
