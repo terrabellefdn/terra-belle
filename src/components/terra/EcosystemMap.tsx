@@ -109,7 +109,7 @@ export function EcosystemMap() {
       for (let o = 1; o <= 3; o++) {
         ctx.beginPath();
         ctx.arc(cx, cy, orbitRadii[o], 0, Math.PI * 2);
-        ctx.strokeStyle = `rgba(17,17,17,${0.05 + (3 - o) * 0.015})`;
+        ctx.strokeStyle = `rgba(255,255,255,${0.08 + (3 - o) * 0.025})`;
         ctx.setLineDash([2, 6]);
         ctx.lineWidth = 1;
         ctx.stroke();
