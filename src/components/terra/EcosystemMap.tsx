@@ -105,11 +105,11 @@ export function EcosystemMap() {
       const t = reduce ? 0 : (now - start) / 1000;
       ctx.clearRect(0, 0, w, h);
 
-      // faint concentric orbit rings
+      // faint concentric orbit rings (dark on light bg)
       for (let o = 1; o <= 3; o++) {
         ctx.beginPath();
         ctx.arc(cx, cy, orbitRadii[o], 0, Math.PI * 2);
-        ctx.strokeStyle = `rgba(255,255,255,${0.08 + (3 - o) * 0.025})`;
+        ctx.strokeStyle = `rgba(17,17,17,${0.10 + (3 - o) * 0.03})`;
         ctx.setLineDash([2, 6]);
         ctx.lineWidth = 1;
         ctx.stroke();
