@@ -52,21 +52,21 @@ export function JourneyLoop({ active }: { active: Vertical }) {
   return (
     <section
       aria-label="Journey through connected verticals"
-      className="relative overflow-hidden rounded-[2rem] border border-black/5 bg-white/80 p-8 backdrop-blur md:p-12"
+      className="relative overflow-hidden rounded-[1.5rem] border border-black/5 bg-white/80 p-5 backdrop-blur sm:rounded-[2rem] sm:p-8 md:p-12"
     >
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-x-10 top-1/2 h-px -translate-y-1/2 bg-gradient-to-r from-transparent via-ink/15 to-transparent"
+        className="pointer-events-none absolute inset-x-10 top-1/2 hidden h-px -translate-y-1/2 bg-gradient-to-r from-transparent via-ink/15 to-transparent sm:block"
       />
 
       {/* Header */}
-      <div className="relative flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <div className="text-[11px] uppercase tracking-[0.28em] text-mist">The Journey Loop</div>
-          <div className="mt-2 font-display text-[clamp(1.4rem,2.4vw,2rem)] leading-tight tracking-tight">
+      <div className="relative flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between">
+        <div className="min-w-0">
+          <div className="text-[10.5px] uppercase tracking-[0.24em] text-mist sm:text-[11px] sm:tracking-[0.28em]">The Journey Loop</div>
+          <div className="mt-2 font-display text-[clamp(1.25rem,3.6vw,2rem)] leading-tight tracking-tight">
             Step through the ecosystem
           </div>
-          <div className="mt-2 text-[13px] text-mist">
+          <div className="mt-2 text-[12.5px] text-mist sm:text-[13px]">
             {activeIdx + 1} of {VERTICALS.length} · {active.category}
           </div>
         </div>
@@ -76,19 +76,19 @@ export function JourneyLoop({ active }: { active: Vertical }) {
             params={{ slug: prev.slug }}
             data-magnetic
             aria-label={`Previous vertical: ${prev.short}`}
-            className="group inline-flex items-center gap-2 rounded-full border border-black/10 bg-white/80 px-4 py-2 text-[12px] font-medium backdrop-blur transition hover:border-black/25"
+            className="group inline-flex min-w-0 items-center gap-2 rounded-full border border-black/10 bg-white/80 px-3 py-2 text-[11.5px] font-medium backdrop-blur transition hover:border-black/25 sm:px-4 sm:text-[12px]"
           >
             <span className="transition-transform group-hover:-translate-x-0.5">←</span>
-            {prev.short}
+            <span className="truncate max-w-[9rem]">{prev.short}</span>
           </Link>
           <Link
             to="/verticals/$slug"
             params={{ slug: next.slug }}
             data-magnetic
             aria-label={`Next vertical: ${next.short}`}
-            className="group inline-flex items-center gap-2 rounded-full bg-ink px-4 py-2 text-[12px] font-medium text-white transition hover:shadow-[0_18px_50px_-20px_rgba(244,176,0,0.55)]"
+            className="group inline-flex min-w-0 items-center gap-2 rounded-full bg-ink px-3 py-2 text-[11.5px] font-medium text-white transition hover:shadow-[0_18px_50px_-20px_rgba(244,176,0,0.55)] sm:px-4 sm:text-[12px]"
           >
-            {next.short}
+            <span className="truncate max-w-[9rem]">{next.short}</span>
             <span className="transition-transform group-hover:translate-x-0.5">→</span>
           </Link>
         </div>
@@ -99,12 +99,12 @@ export function JourneyLoop({ active }: { active: Vertical }) {
         ref={listRef}
         role="list"
         onKeyDown={onKey}
-        className="relative mt-10 flex flex-wrap items-stretch gap-3"
+        className="relative mt-8 grid grid-cols-2 gap-2.5 sm:mt-10 sm:flex sm:flex-wrap sm:items-stretch sm:gap-3"
       >
         {VERTICALS.map((v, i) => {
           const isActive = v.slug === active.slug;
           return (
-            <li key={v.slug} className="min-w-0 flex-1 basis-[140px]">
+            <li key={v.slug} className="min-w-0 sm:flex-1 sm:basis-[140px]">
               <Link
                 to="/verticals/$slug"
                 params={{ slug: v.slug }}
