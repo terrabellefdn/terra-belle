@@ -326,6 +326,85 @@ function VerticalDetail() {
           </div>
         </div>
       </Section>
+      {/* Regenerative cycle — phased lifecycle */}
+      {v.phases && v.phases.length > 0 && (
+        <Section id={`cycle-${v.slug}`} eyebrow="Regenerative cycle" index={`0${v.phases.length}`}>
+          <div className="relative">
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-x-0 top-8 hidden h-px md:block"
+              style={{ background: `linear-gradient(90deg, transparent, ${v.color}55, transparent)` }}
+            />
+            <ol className="relative grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {v.phases.map((p, i) => (
+                <Reveal key={p.name} delay={i * 0.08}>
+                  <li className="relative flex h-full flex-col rounded-2xl border border-black/5 bg-white/80 p-6 backdrop-blur">
+                    <div className="flex items-center gap-3">
+                      <span
+                        className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-[11px] font-medium"
+                        style={{ background: v.color + "1a", color: v.color }}
+                      >
+                        {String(i + 1).padStart(2, "0")}
+                      </span>
+                      <div className="min-w-0 font-display text-[1.05rem] leading-tight tracking-tight text-ink">
+                        {p.name}
+                      </div>
+                    </div>
+                    <p className="mt-4 text-[13.5px] leading-relaxed text-mist">{p.detail}</p>
+                    <span
+                      aria-hidden
+                      className="absolute bottom-0 left-0 h-[2px] w-full origin-left scale-x-0 transition-transform duration-700 group-hover:scale-x-100"
+                      style={{ background: `linear-gradient(90deg, ${v.color}, transparent)` }}
+                    />
+                  </li>
+                </Reveal>
+              ))}
+            </ol>
+          </div>
+        </Section>
+      )}
+
+      {/* Cross-vertical bridges */}
+      {v.bridges && v.bridges.length > 0 && (
+        <Section id={`bridges-${v.slug}`} eyebrow="Cross-vertical loops">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            {v.bridges.map((b, i) => {
+              const target = VERTICALS.find((x) => x.slug === b.slug);
+              if (!target) return null;
+              const T = target.Icon;
+              return (
+                <Reveal key={b.slug} delay={i * 0.08}>
+                  <Link
+                    to="/verticals/$slug"
+                    params={{ slug: target.slug }}
+                    data-magnetic
+                    className="group flex h-full items-start gap-4 rounded-2xl border border-black/5 bg-white/80 p-6 backdrop-blur transition hover:border-black/20 hover:shadow-[0_18px_50px_-25px_rgba(17,17,17,0.28)]"
+                  >
+                    <span
+                      className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl"
+                      style={{ background: target.color + "1e" }}
+                    >
+                      <T size={20} color={target.color} />
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <div className="text-[10.5px] uppercase tracking-[0.24em] text-mist">
+                        Loop into · {target.category}
+                      </div>
+                      <div className="mt-1 font-display text-[1.05rem] leading-tight tracking-tight text-ink">
+                        {target.short}
+                      </div>
+                      <p className="mt-2 text-[13.5px] leading-relaxed text-mist">{b.label}</p>
+                    </div>
+                    <span className="mt-1 shrink-0 text-ink/60 transition-transform group-hover:translate-x-0.5">
+                      →
+                    </span>
+                  </Link>
+                </Reveal>
+              );
+            })}
+          </div>
+        </Section>
+      )}
 
       {/* Journey Loop — motion language mirrors the chapter rail */}
       <Section id={`journey-${v.slug}`} eyebrow="Continue the loop">
