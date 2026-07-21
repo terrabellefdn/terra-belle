@@ -9,7 +9,7 @@ import {
   PartnerApplyDialog,
   type PartnerApplyScope,
 } from "@/components/terra/PartnerApplyDialog";
-import { getVertical } from "@/lib/verticals-data";
+import { getVertical, VERTICALS } from "@/lib/verticals-data";
 
 export const Route = createFileRoute("/verticals/$slug")({
   loader: ({ params }) => {
@@ -86,7 +86,7 @@ function VerticalDetail() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-          className="relative overflow-hidden rounded-[2rem] border border-black/5 bg-white/85 p-10 backdrop-blur md:p-16"
+          className="relative overflow-hidden rounded-[1.5rem] border border-black/5 bg-white/85 p-6 backdrop-blur sm:rounded-[2rem] sm:p-10 md:p-16"
         >
           <div
             aria-hidden
@@ -99,36 +99,36 @@ function VerticalDetail() {
             style={{ background: v.color }}
           />
 
-          <div className="relative flex items-center gap-4">
+          <div className="relative flex items-center gap-3 sm:gap-4">
             <span
-              className="grid h-14 w-14 place-items-center rounded-2xl"
+              className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl sm:h-14 sm:w-14"
               style={{ background: v.color + "22" }}
             >
-              <Icon size={28} color={v.color} />
+              <Icon size={24} color={v.color} />
             </span>
-            <div>
-              <div className="text-[11px] uppercase tracking-[0.28em] text-mist">{v.eyebrow}</div>
-              <div className="mt-1 font-display text-[1.15rem] leading-tight tracking-tight">
+            <div className="min-w-0">
+              <div className="text-[10.5px] uppercase tracking-[0.24em] text-mist sm:text-[11px] sm:tracking-[0.28em]">{v.eyebrow}</div>
+              <div className="mt-1 font-display text-[1.05rem] leading-tight tracking-tight sm:text-[1.15rem]">
                 {v.title}
               </div>
             </div>
           </div>
 
-          <p className="relative mt-8 max-w-3xl font-display text-[clamp(1.5rem,3vw,2.4rem)] leading-[1.1] tracking-[-0.01em] text-balance">
+          <p className="relative mt-6 max-w-3xl font-display text-[clamp(1.3rem,5vw,2.4rem)] leading-[1.1] tracking-[-0.01em] text-balance sm:mt-8">
             {v.hero}
           </p>
 
-          <div className="relative mt-12 grid grid-cols-1 gap-6 sm:grid-cols-3">
+          <div className="relative mt-8 grid grid-cols-1 gap-4 sm:mt-12 sm:grid-cols-3 sm:gap-6">
             {v.metrics.map((m, i) => (
               <Reveal key={m.label} delay={i * 0.08}>
-                <div className="rounded-2xl border border-black/5 bg-white/70 p-6 backdrop-blur">
+                <div className="rounded-2xl border border-black/5 bg-white/70 p-5 backdrop-blur sm:p-6">
                   <div
-                    className="font-display text-[clamp(1.8rem,3vw,2.6rem)] leading-none"
+                    className="font-display text-[clamp(1.6rem,5vw,2.6rem)] leading-none"
                     style={{ color: v.color }}
                   >
                     {m.value}
                   </div>
-                  <div className="mt-2 text-[11px] uppercase tracking-[0.24em] text-mist">
+                  <div className="mt-2 text-[10.5px] uppercase tracking-[0.22em] text-mist sm:text-[11px] sm:tracking-[0.24em]">
                     {m.label}
                   </div>
                 </div>
@@ -326,6 +326,85 @@ function VerticalDetail() {
           </div>
         </div>
       </Section>
+      {/* Regenerative cycle — phased lifecycle */}
+      {v.phases && v.phases.length > 0 && (
+        <Section id={`cycle-${v.slug}`} eyebrow="Regenerative cycle" index={`0${v.phases.length}`}>
+          <div className="relative">
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-x-0 top-8 hidden h-px md:block"
+              style={{ background: `linear-gradient(90deg, transparent, ${v.color}55, transparent)` }}
+            />
+            <ol className="relative grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {v.phases.map((p, i) => (
+                <Reveal key={p.name} delay={i * 0.08}>
+                  <li className="relative flex h-full flex-col rounded-2xl border border-black/5 bg-white/80 p-6 backdrop-blur">
+                    <div className="flex items-center gap-3">
+                      <span
+                        className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-[11px] font-medium"
+                        style={{ background: v.color + "1a", color: v.color }}
+                      >
+                        {String(i + 1).padStart(2, "0")}
+                      </span>
+                      <div className="min-w-0 font-display text-[1.05rem] leading-tight tracking-tight text-ink">
+                        {p.name}
+                      </div>
+                    </div>
+                    <p className="mt-4 text-[13.5px] leading-relaxed text-mist">{p.detail}</p>
+                    <span
+                      aria-hidden
+                      className="absolute bottom-0 left-0 h-[2px] w-full origin-left scale-x-0 transition-transform duration-700 group-hover:scale-x-100"
+                      style={{ background: `linear-gradient(90deg, ${v.color}, transparent)` }}
+                    />
+                  </li>
+                </Reveal>
+              ))}
+            </ol>
+          </div>
+        </Section>
+      )}
+
+      {/* Cross-vertical bridges */}
+      {v.bridges && v.bridges.length > 0 && (
+        <Section id={`bridges-${v.slug}`} eyebrow="Cross-vertical loops">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            {v.bridges.map((b, i) => {
+              const target = VERTICALS.find((x) => x.slug === b.slug);
+              if (!target) return null;
+              const T = target.Icon;
+              return (
+                <Reveal key={b.slug} delay={i * 0.08}>
+                  <Link
+                    to="/verticals/$slug"
+                    params={{ slug: target.slug }}
+                    data-magnetic
+                    className="group flex h-full items-start gap-4 rounded-2xl border border-black/5 bg-white/80 p-6 backdrop-blur transition hover:border-black/20 hover:shadow-[0_18px_50px_-25px_rgba(17,17,17,0.28)]"
+                  >
+                    <span
+                      className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl"
+                      style={{ background: target.color + "1e" }}
+                    >
+                      <T size={20} color={target.color} />
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <div className="text-[10.5px] uppercase tracking-[0.24em] text-mist">
+                        Loop into · {target.category}
+                      </div>
+                      <div className="mt-1 font-display text-[1.05rem] leading-tight tracking-tight text-ink">
+                        {target.short}
+                      </div>
+                      <p className="mt-2 text-[13.5px] leading-relaxed text-mist">{b.label}</p>
+                    </div>
+                    <span className="mt-1 shrink-0 text-ink/60 transition-transform group-hover:translate-x-0.5">
+                      →
+                    </span>
+                  </Link>
+                </Reveal>
+              );
+            })}
+          </div>
+        </Section>
+      )}
 
       {/* Journey Loop — motion language mirrors the chapter rail */}
       <Section id={`journey-${v.slug}`} eyebrow="Continue the loop">
