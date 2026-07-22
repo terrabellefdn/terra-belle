@@ -53,11 +53,11 @@ function AdminLayout() {
     );
   }
 
-  const tabs = [
+  const tabs: { to: string; label: string; exact?: boolean }[] = [
     { to: "/admin", label: "Overview", exact: true },
     { to: "/admin/applications", label: "Applications" },
     { to: "/admin/verticals", label: "Verticals" },
-  ] as const;
+  ];
 
   return (
     <div className="min-h-screen bg-[#fafaf7]">
