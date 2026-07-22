@@ -2,6 +2,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { z } from "zod";
+import { useServerFn } from "@tanstack/react-start";
+import { submitPartnerApplication } from "@/lib/partner.functions";
 import type { Vertical, VerticalProject } from "@/lib/verticals-data";
 
 /**
