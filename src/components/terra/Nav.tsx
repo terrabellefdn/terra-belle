@@ -21,6 +21,7 @@ const NAV_LINKS = [
   { to: "/circular", label: "Circular" },
   { to: "/impact", label: "Impact" },
   { to: "/verticals", label: "Verticals" },
+  { to: "/contact", label: "Contact" },
 ] as const;
 
 export function TopNav() {

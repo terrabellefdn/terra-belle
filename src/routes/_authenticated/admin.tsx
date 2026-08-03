@@ -56,7 +56,9 @@ function AdminLayout() {
   const tabs: { to: string; label: string; exact?: boolean }[] = [
     { to: "/admin", label: "Overview", exact: true },
     { to: "/admin/applications", label: "Applications" },
+    { to: "/admin/messages", label: "Messages" },
     { to: "/admin/verticals", label: "Verticals" },
+    { to: "/admin/audit", label: "Audit log" },
   ];
 
   return (

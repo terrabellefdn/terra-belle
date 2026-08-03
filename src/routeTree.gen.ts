@@ -14,6 +14,7 @@ import { Route as PlanetRouteImport } from './routes/planet'
 import { Route as McpRouteImport } from './routes/mcp'
 import { Route as ImpactRouteImport } from './routes/impact'
 import { Route as EcosystemRouteImport } from './routes/ecosystem'
+import { Route as ContactRouteImport } from './routes/contact'
 import { Route as CircularRouteImport } from './routes/circular'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
@@ -53,6 +54,11 @@ const ImpactRoute = ImpactRouteImport.update({
 const EcosystemRoute = EcosystemRouteImport.update({
   id: '/ecosystem',
   path: '/ecosystem',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CircularRoute = CircularRouteImport.update({
@@ -140,6 +146,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/circular': typeof CircularRoute
+  '/contact': typeof ContactRoute
   '/ecosystem': typeof EcosystemRoute
   '/impact': typeof ImpactRoute
   '/mcp': typeof McpRoute
@@ -161,6 +168,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/circular': typeof CircularRoute
+  '/contact': typeof ContactRoute
   '/ecosystem': typeof EcosystemRoute
   '/impact': typeof ImpactRoute
   '/mcp': typeof McpRoute
@@ -182,6 +190,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/circular': typeof CircularRoute
+  '/contact': typeof ContactRoute
   '/ecosystem': typeof EcosystemRoute
   '/impact': typeof ImpactRoute
   '/mcp': typeof McpRoute
@@ -205,6 +214,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/circular'
+    | '/contact'
     | '/ecosystem'
     | '/impact'
     | '/mcp'
@@ -226,6 +236,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/circular'
+    | '/contact'
     | '/ecosystem'
     | '/impact'
     | '/mcp'
@@ -246,6 +257,7 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/auth'
     | '/circular'
+    | '/contact'
     | '/ecosystem'
     | '/impact'
     | '/mcp'
@@ -269,6 +281,7 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
   CircularRoute: typeof CircularRoute
+  ContactRoute: typeof ContactRoute
   EcosystemRoute: typeof EcosystemRoute
   ImpactRoute: typeof ImpactRoute
   McpRoute: typeof McpRoute
@@ -314,6 +327,13 @@ declare module '@tanstack/react-router' {
       path: '/ecosystem'
       fullPath: '/ecosystem'
       preLoaderRoute: typeof EcosystemRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/circular': {
@@ -473,6 +493,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
   CircularRoute: CircularRoute,
+  ContactRoute: ContactRoute,
   EcosystemRoute: EcosystemRoute,
   ImpactRoute: ImpactRoute,
   McpRoute: McpRoute,
