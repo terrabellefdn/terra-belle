@@ -20,6 +20,7 @@ function AuthPage() {
   const [name, setName] = useState("");
   const [err, setErr] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [signedUp, setSignedUp] = useState<null | { needsConfirm: boolean }>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -34,7 +35,7 @@ function AuthPage() {
     setBusy(true);
     try {
       if (mode === "signup") {
-        const { error } = await supabase.auth.signUp({
+        const { data, error } = await supabase.auth.signUp({
           email,
           password,
           options: {
@@ -43,6 +44,11 @@ function AuthPage() {
           },
         });
         if (error) throw error;
+        setSignedUp({ needsConfirm: !data.session });
+        setBusy(false);
+        if (!data.session) return;
+        navigate({ to: "/admin" });
+        return;
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
@@ -53,6 +59,33 @@ function AuthPage() {
     } finally {
       setBusy(false);
     }
+  }
+
+  if (signedUp) {
+    return (
+      <main className="flex min-h-screen items-center justify-center bg-white px-4 py-16">
+        <div className="w-full max-w-md rounded-2xl border border-black/10 bg-white p-8 text-center shadow-[0_30px_80px_-40px_rgba(0,0,0,0.3)]">
+          <div className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-green/15 text-[22px] text-green">
+            ✓
+          </div>
+          <h1 className="mt-6 font-display text-[1.6rem] tracking-tight">Account created</h1>
+          <p className="mt-3 text-[13.5px] leading-relaxed text-mist">
+            {signedUp.needsConfirm
+              ? `We've sent a confirmation link to ${email}. Click it to activate your account, then sign in to the admin portal.`
+              : "Your account is active. Taking you to the admin portal…"}
+          </p>
+          <button
+            onClick={() => {
+              setSignedUp(null);
+              setMode("signin");
+            }}
+            className="mt-8 rounded-full border border-black/10 px-5 py-2.5 text-[12.5px] hover:border-black/25"
+          >
+            Go to sign in
+          </button>
+        </div>
+      </main>
+    );
   }
 
   return (

@@ -14,6 +14,7 @@ import { Route as PlanetRouteImport } from './routes/planet'
 import { Route as McpRouteImport } from './routes/mcp'
 import { Route as ImpactRouteImport } from './routes/impact'
 import { Route as EcosystemRouteImport } from './routes/ecosystem'
+import { Route as ContactRouteImport } from './routes/contact'
 import { Route as CircularRouteImport } from './routes/circular'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
@@ -25,6 +26,8 @@ import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } fr
 import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
 import { Route as AuthenticatedAdminVerticalsRouteImport } from './routes/_authenticated/admin.verticals'
+import { Route as AuthenticatedAdminMessagesRouteImport } from './routes/_authenticated/admin.messages'
+import { Route as AuthenticatedAdminAuditRouteImport } from './routes/_authenticated/admin.audit'
 import { Route as AuthenticatedAdminApplicationsRouteImport } from './routes/_authenticated/admin.applications'
 import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
 
@@ -51,6 +54,11 @@ const ImpactRoute = ImpactRouteImport.update({
 const EcosystemRoute = EcosystemRouteImport.update({
   id: '/ecosystem',
   path: '/ecosystem',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CircularRoute = CircularRouteImport.update({
@@ -110,6 +118,17 @@ const AuthenticatedAdminVerticalsRoute =
     path: '/verticals',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminMessagesRoute =
+  AuthenticatedAdminMessagesRouteImport.update({
+    id: '/messages',
+    path: '/messages',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminAuditRoute = AuthenticatedAdminAuditRouteImport.update({
+  id: '/audit',
+  path: '/audit',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
 const AuthenticatedAdminApplicationsRoute =
   AuthenticatedAdminApplicationsRouteImport.update({
     id: '/applications',
@@ -127,6 +146,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/circular': typeof CircularRoute
+  '/contact': typeof ContactRoute
   '/ecosystem': typeof EcosystemRoute
   '/impact': typeof ImpactRoute
   '/mcp': typeof McpRoute
@@ -139,6 +159,8 @@ export interface FileRoutesByFullPath {
   '/verticals/': typeof VerticalsIndexRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/admin/applications': typeof AuthenticatedAdminApplicationsRoute
+  '/admin/audit': typeof AuthenticatedAdminAuditRoute
+  '/admin/messages': typeof AuthenticatedAdminMessagesRoute
   '/admin/verticals': typeof AuthenticatedAdminVerticalsRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
 }
@@ -146,6 +168,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/circular': typeof CircularRoute
+  '/contact': typeof ContactRoute
   '/ecosystem': typeof EcosystemRoute
   '/impact': typeof ImpactRoute
   '/mcp': typeof McpRoute
@@ -156,6 +179,8 @@ export interface FileRoutesByTo {
   '/verticals': typeof VerticalsIndexRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/admin/applications': typeof AuthenticatedAdminApplicationsRoute
+  '/admin/audit': typeof AuthenticatedAdminAuditRoute
+  '/admin/messages': typeof AuthenticatedAdminMessagesRoute
   '/admin/verticals': typeof AuthenticatedAdminVerticalsRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
 }
@@ -165,6 +190,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/circular': typeof CircularRoute
+  '/contact': typeof ContactRoute
   '/ecosystem': typeof EcosystemRoute
   '/impact': typeof ImpactRoute
   '/mcp': typeof McpRoute
@@ -177,6 +203,8 @@ export interface FileRoutesById {
   '/verticals/': typeof VerticalsIndexRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/_authenticated/admin/applications': typeof AuthenticatedAdminApplicationsRoute
+  '/_authenticated/admin/audit': typeof AuthenticatedAdminAuditRoute
+  '/_authenticated/admin/messages': typeof AuthenticatedAdminMessagesRoute
   '/_authenticated/admin/verticals': typeof AuthenticatedAdminVerticalsRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
 }
@@ -186,6 +214,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/circular'
+    | '/contact'
     | '/ecosystem'
     | '/impact'
     | '/mcp'
@@ -198,6 +227,8 @@ export interface FileRouteTypes {
     | '/verticals/'
     | '/.mcp/invoke-tool/$tool'
     | '/admin/applications'
+    | '/admin/audit'
+    | '/admin/messages'
     | '/admin/verticals'
     | '/admin/'
   fileRoutesByTo: FileRoutesByTo
@@ -205,6 +236,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/circular'
+    | '/contact'
     | '/ecosystem'
     | '/impact'
     | '/mcp'
@@ -215,6 +247,8 @@ export interface FileRouteTypes {
     | '/verticals'
     | '/.mcp/invoke-tool/$tool'
     | '/admin/applications'
+    | '/admin/audit'
+    | '/admin/messages'
     | '/admin/verticals'
     | '/admin'
   id:
@@ -223,6 +257,7 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/auth'
     | '/circular'
+    | '/contact'
     | '/ecosystem'
     | '/impact'
     | '/mcp'
@@ -235,6 +270,8 @@ export interface FileRouteTypes {
     | '/verticals/'
     | '/.mcp/invoke-tool/$tool'
     | '/_authenticated/admin/applications'
+    | '/_authenticated/admin/audit'
+    | '/_authenticated/admin/messages'
     | '/_authenticated/admin/verticals'
     | '/_authenticated/admin/'
   fileRoutesById: FileRoutesById
@@ -244,6 +281,7 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
   CircularRoute: typeof CircularRoute
+  ContactRoute: typeof ContactRoute
   EcosystemRoute: typeof EcosystemRoute
   ImpactRoute: typeof ImpactRoute
   McpRoute: typeof McpRoute
@@ -289,6 +327,13 @@ declare module '@tanstack/react-router' {
       path: '/ecosystem'
       fullPath: '/ecosystem'
       preLoaderRoute: typeof EcosystemRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/circular': {
@@ -368,6 +413,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminVerticalsRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/messages': {
+      id: '/_authenticated/admin/messages'
+      path: '/messages'
+      fullPath: '/admin/messages'
+      preLoaderRoute: typeof AuthenticatedAdminMessagesRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/audit': {
+      id: '/_authenticated/admin/audit'
+      path: '/audit'
+      fullPath: '/admin/audit'
+      preLoaderRoute: typeof AuthenticatedAdminAuditRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/applications': {
       id: '/_authenticated/admin/applications'
       path: '/applications'
@@ -387,12 +446,16 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminApplicationsRoute: typeof AuthenticatedAdminApplicationsRoute
+  AuthenticatedAdminAuditRoute: typeof AuthenticatedAdminAuditRoute
+  AuthenticatedAdminMessagesRoute: typeof AuthenticatedAdminMessagesRoute
   AuthenticatedAdminVerticalsRoute: typeof AuthenticatedAdminVerticalsRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
 }
 
 const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminApplicationsRoute: AuthenticatedAdminApplicationsRoute,
+  AuthenticatedAdminAuditRoute: AuthenticatedAdminAuditRoute,
+  AuthenticatedAdminMessagesRoute: AuthenticatedAdminMessagesRoute,
   AuthenticatedAdminVerticalsRoute: AuthenticatedAdminVerticalsRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
 }
@@ -430,6 +493,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
   CircularRoute: CircularRoute,
+  ContactRoute: ContactRoute,
   EcosystemRoute: EcosystemRoute,
   ImpactRoute: ImpactRoute,
   McpRoute: McpRoute,
