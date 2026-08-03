@@ -20,6 +20,7 @@ function AuthPage() {
   const [name, setName] = useState("");
   const [err, setErr] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [signedUp, setSignedUp] = useState<null | { needsConfirm: boolean }>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -34,7 +35,7 @@ function AuthPage() {
     setBusy(true);
     try {
       if (mode === "signup") {
-        const { error } = await supabase.auth.signUp({
+        const { data, error } = await supabase.auth.signUp({
           email,
           password,
           options: {
@@ -43,6 +44,11 @@ function AuthPage() {
           },
         });
         if (error) throw error;
+        setSignedUp({ needsConfirm: !data.session });
+        setBusy(false);
+        if (!data.session) return;
+        navigate({ to: "/admin" });
+        return;
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
