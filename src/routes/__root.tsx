@@ -130,19 +130,62 @@ function RootComponent() {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
+
+    // Bot / non-user traffic filter (server re-checks too).
+    const ua = navigator.userAgent || "";
+    if ((navigator as any).webdriver || /bot|crawl|spider|headless|lighthouse|preview/i.test(ua)) return;
+
     let sid = sessionStorage.getItem("tb.sid");
     if (!sid) {
       sid = `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
       sessionStorage.setItem("tb.sid", sid);
     }
-    logPageView({
-      data: {
-        path: pathname,
-        referrer: document.referrer || null,
-        userAgent: navigator.userAgent,
-        sessionId: sid,
-      },
-    }).catch(() => {});
+
+    // De-duplicate rapid navigations: same session + path within 30s counts once.
+    const dedupeKey = `tb.seen.${pathname}`;
+    const last = Number(sessionStorage.getItem(dedupeKey) ?? 0);
+    const now = Date.now();
+    if (now - last < 30_000) return;
+    sessionStorage.setItem(dedupeKey, String(now));
+
+    const viewKey = `${sid}:${pathname}:${Math.floor(now / 30_000)}`;
+    const started = now;
+    let reported = false;
+
+    const timer = window.setTimeout(() => {
+      logPageView({
+        data: {
+          path: pathname,
+          referrer: document.referrer || null,
+          userAgent: ua.slice(0, 500),
+          sessionId: sid,
+          viewKey,
+          language: navigator.language ?? null,
+          screen: `${window.screen.width}x${window.screen.height}`,
+        },
+      }).catch(() => {});
+    }, 1200);
+
+    const flush = () => {
+      if (reported) return;
+      reported = true;
+      const durationMs = Date.now() - started;
+      if (durationMs < 1500) return;
+      recordViewDuration({ data: { viewKey, durationMs } }).catch(() => {});
+    };
+
+    const onHidden = () => {
+      if (document.visibilityState === "hidden") flush();
+    };
+    document.addEventListener("visibilitychange", onHidden);
+    window.addEventListener("pagehide", flush);
+
+    return () => {
+      window.clearTimeout(timer);
+      document.removeEventListener("visibilitychange", onHidden);
+      window.removeEventListener("pagehide", flush);
+      flush();
+    };
   }, [pathname]);
 
   return (
