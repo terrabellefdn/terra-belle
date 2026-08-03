@@ -14,30 +14,135 @@ export type Database = {
   }
   public: {
     Tables: {
-      page_views: {
+      admin_audit_log: {
+        Row: {
+          action: string
+          actor_email: string | null
+          actor_id: string | null
+          after_data: Json | null
+          before_data: Json | null
+          created_at: string
+          entity_id: string | null
+          entity_type: string
+          id: string
+          summary: string | null
+        }
+        Insert: {
+          action: string
+          actor_email?: string | null
+          actor_id?: string | null
+          after_data?: Json | null
+          before_data?: Json | null
+          created_at?: string
+          entity_id?: string | null
+          entity_type: string
+          id?: string
+          summary?: string | null
+        }
+        Update: {
+          action?: string
+          actor_email?: string | null
+          actor_id?: string | null
+          after_data?: Json | null
+          before_data?: Json | null
+          created_at?: string
+          entity_id?: string | null
+          entity_type?: string
+          id?: string
+          summary?: string | null
+        }
+        Relationships: []
+      }
+      contact_messages: {
         Row: {
           created_at: string
-          id: number
-          path: string
-          referrer: string | null
-          session_id: string | null
-          user_agent: string | null
+          email: string
+          id: string
+          message: string
+          name: string
+          organization: string | null
+          status: string
+          topic: string
+          updated_at: string
         }
         Insert: {
           created_at?: string
-          id?: number
-          path: string
-          referrer?: string | null
-          session_id?: string | null
-          user_agent?: string | null
+          email: string
+          id?: string
+          message: string
+          name: string
+          organization?: string | null
+          status?: string
+          topic?: string
+          updated_at?: string
         }
         Update: {
           created_at?: string
+          email?: string
+          id?: string
+          message?: string
+          name?: string
+          organization?: string | null
+          status?: string
+          topic?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      page_views: {
+        Row: {
+          browser: string | null
+          city: string | null
+          country: string | null
+          created_at: string
+          device_type: string | null
+          duration_ms: number | null
+          id: number
+          is_bot: boolean
+          language: string | null
+          os: string | null
+          path: string
+          referrer: string | null
+          screen: string | null
+          session_id: string | null
+          user_agent: string | null
+          view_key: string | null
+        }
+        Insert: {
+          browser?: string | null
+          city?: string | null
+          country?: string | null
+          created_at?: string
+          device_type?: string | null
+          duration_ms?: number | null
           id?: number
-          path?: string
+          is_bot?: boolean
+          language?: string | null
+          os?: string | null
+          path: string
           referrer?: string | null
+          screen?: string | null
           session_id?: string | null
           user_agent?: string | null
+          view_key?: string | null
+        }
+        Update: {
+          browser?: string | null
+          city?: string | null
+          country?: string | null
+          created_at?: string
+          device_type?: string | null
+          duration_ms?: number | null
+          id?: number
+          is_bot?: boolean
+          language?: string | null
+          os?: string | null
+          path?: string
+          referrer?: string | null
+          screen?: string | null
+          session_id?: string | null
+          user_agent?: string | null
+          view_key?: string | null
         }
         Relationships: []
       }
