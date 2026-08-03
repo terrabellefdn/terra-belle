@@ -1,7 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { createClient } from "@supabase/supabase-js";
-import type { Database } from "@/integrations/supabase/types";
+import { publicServerClient } from "./supabase-public.server";
 
 const schema = z.object({
   scopeKind: z.enum(["vertical", "project"]),
@@ -16,25 +15,10 @@ const schema = z.object({
   message: z.string().trim().min(20).max(1200),
 });
 
-function serverClient() {
-  const key = process.env.SUPABASE_PUBLISHABLE_KEY!;
-  return createClient<Database>(process.env.SUPABASE_URL!, key, {
-    auth: { persistSession: false, autoRefreshToken: false, storage: undefined },
-    global: {
-      fetch: (input, init) => {
-        const h = new Headers(init?.headers);
-        if (key.startsWith("sb_") && h.get("Authorization") === `Bearer ${key}`) h.delete("Authorization");
-        h.set("apikey", key);
-        return fetch(input, { ...init, headers: h });
-      },
-    },
-  });
-}
-
 export const submitPartnerApplication = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => schema.parse(d))
   .handler(async ({ data }) => {
-    const supabase = serverClient();
+    const supabase = publicServerClient();
     const { error } = await supabase.from("partner_applications").insert({
       scope_kind: data.scopeKind,
       vertical_slug: data.verticalSlug,
