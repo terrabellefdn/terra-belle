@@ -56,10 +56,16 @@ export const recordViewDuration = createServerFn({ method: "POST" })
     z.object({ viewKey: z.string().min(6).max(120), durationMs: z.number().int().min(0).max(6 * 3600 * 1000) }).parse(d),
   )
   .handler(async ({ data }) => {
-    const supabase = publicServerClient();
-    await supabase
+    // Visitors have no UPDATE rights on page_views; the duration is written
+    // server-side only, scoped to a single recent row by its view key.
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const cutoff = new Date(Date.now() - 6 * 3600 * 1000).toISOString();
+    await supabaseAdmin
       .from("page_views")
       .update({ duration_ms: data.durationMs })
-      .eq("view_key", data.viewKey);
+      .eq("view_key", data.viewKey)
+      .is("duration_ms", null)
+      .gte("created_at", cutoff);
     return { ok: true };
   });
+
