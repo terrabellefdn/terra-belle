@@ -53,6 +53,51 @@ export type Database = {
         }
         Relationships: []
       }
+      admin_login_events: {
+        Row: {
+          aal: string | null
+          acknowledged: boolean
+          city: string | null
+          country: string | null
+          created_at: string
+          email: string | null
+          id: string
+          ip: string | null
+          reasons: string[]
+          suspicious: boolean
+          user_agent: string | null
+          user_id: string
+        }
+        Insert: {
+          aal?: string | null
+          acknowledged?: boolean
+          city?: string | null
+          country?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          ip?: string | null
+          reasons?: string[]
+          suspicious?: boolean
+          user_agent?: string | null
+          user_id: string
+        }
+        Update: {
+          aal?: string | null
+          acknowledged?: boolean
+          city?: string | null
+          country?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          ip?: string | null
+          reasons?: string[]
+          suspicious?: boolean
+          user_agent?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       contact_messages: {
         Row: {
           created_at: string
