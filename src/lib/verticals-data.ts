@@ -13,7 +13,8 @@ export type VerticalCategory =
   | "Atmosphere"
   | "Aerospace"
   | "Materials"
-  | "Community";
+  | "Community"
+  | "Mobility";
 
 export type VerticalProject = {
   id: string;
@@ -53,6 +54,7 @@ export const CATEGORIES: (VerticalCategory | "All")[] = [
   "Aerospace",
   "Materials",
   "Community",
+  "Mobility",
 ];
 
 export const VERTICALS: Vertical[] = [
@@ -384,6 +386,59 @@ export const VERTICALS: Vertical[] = [
     bridges: [
       { slug: "web3-mrv", label: "Corridors overlap MRV reforestation parcels" },
       { slug: "vertical-gardens", label: "Habitat continuity extends into urban corridors" },
+    ],
+  },
+  {
+    slug: "emobility",
+    title: "E-Mobility & Long-Distance Electric Transport",
+    short: "E-Mobility",
+    eyebrow: "Electric Corridors",
+    category: "Mobility",
+    color: "#F4B000",
+    Icon: SunIcon,
+    summary:
+      "Electrifying long-distance road transport — building high-power charging corridors, depot energy systems and fleet software so intercity electric coaches can run on renewable power end to end.",
+    hero: "Highways that recharge themselves. Coaches crossing countries on sunlight, with every stop a node in a renewable grid.",
+    mission:
+      "Make long-distance electric coach travel practical, affordable and renewable-powered across emerging-market corridors.",
+    vision:
+      "A continent connected by silent, zero-emission coaches charged by solar and hydro at every corridor stop.",
+    goals: [
+      "Open the first renewable-powered long-distance coach charging corridor",
+      "Cut per-passenger transport emissions on served routes by over 80%",
+      "Pair every charging hub with on-site solar and battery storage",
+    ],
+    drives: [
+      "Decarbonising intercity public transport",
+      "Giving operators lower, predictable energy costs",
+      "Bringing clean energy infrastructure to roadside communities",
+    ],
+    projects: [
+      {
+        id: "voltrium",
+        name: "Voltrium",
+        status: "Piloting",
+        detail:
+          "Underway: megawatt-class charging hubs for long-distance electric coaches, with solar canopies, battery buffering and smart scheduling so coaches recharge during passenger stops.",
+      },
+      { id: "emob-depot", name: "Depot Energy Systems", status: "R&D", detail: "Overnight depot charging paired with storage to flatten grid demand." },
+      { id: "emob-fleet", name: "Fleet Intelligence", status: "R&D", detail: "Route, battery and charge planning software for electric coach operators." },
+    ],
+    metrics: [
+      { value: "1", label: "Charging corridor underway" },
+      { value: "MW", label: "Class coach charging" },
+      { value: "80%+", label: "Target emissions cut per passenger" },
+    ],
+    phases: [
+      { name: "Map", detail: "Model routes, dwell times and grid capacity along the corridor." },
+      { name: "Build", detail: "Install high-power chargers with solar canopies and battery buffers." },
+      { name: "Operate", detail: "Schedule charging around passenger stops and renewable output." },
+      { name: "Scale", detail: "Extend the corridor and onboard more coach operators." },
+    ],
+    partners: ["Coach operators", "Grid utilities", "Charging hardware manufacturers"],
+    bridges: [
+      { slug: "green-energy", label: "Charged by Distributed Green Energy" },
+      { slug: "web3-mrv", label: "Avoided emissions reported through the MRV registry" },
     ],
   },
 ];
