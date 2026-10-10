@@ -4,6 +4,8 @@ import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { supabase } from "@/integrations/supabase/client";
 import { checkIsAdmin } from "@/lib/admin.functions";
+import { recordAdminLogin } from "@/lib/security.functions";
+import { MfaGate } from "@/components/terra/MfaGate";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({
@@ -24,6 +26,12 @@ function AdminLayout() {
     staleTime: 60_000,
   });
   const [email, setEmail] = useState<string | null>(null);
+  const record = useServerFn(recordAdminLogin);
+  const onVerified = () => {
+    if (sessionStorage.getItem("tb_admin_login_logged")) return;
+    sessionStorage.setItem("tb_admin_login_logged", "1");
+    record().catch(() => {});
+  };
   const path = useRouterState({ select: (s) => s.location.pathname });
 
   useEffect(() => {
@@ -39,6 +47,9 @@ function AdminLayout() {
         <div className="max-w-md">
           <h1 className="font-display text-2xl">Access restricted</h1>
           <p className="mt-3 text-sm text-mist">Your account doesn't have admin access.</p>
+          <Link to="/partner" className="mt-6 inline-block rounded-full bg-ink px-5 py-2 text-[12.5px] text-white">
+            Go to partner portal
+          </Link>
           <button
             onClick={async () => {
               await supabase.auth.signOut();
@@ -58,10 +69,12 @@ function AdminLayout() {
     { to: "/admin/applications", label: "Applications" },
     { to: "/admin/messages", label: "Messages" },
     { to: "/admin/verticals", label: "Verticals" },
+    { to: "/admin/security", label: "Security" },
     { to: "/admin/audit", label: "Audit log" },
   ];
 
   return (
+    <MfaGate onVerified={onVerified}>
     <div className="min-h-screen bg-[#fafaf7]">
       <header className="sticky top-0 z-30 border-b border-black/5 bg-white/85 backdrop-blur">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6">
@@ -105,5 +118,6 @@ function AdminLayout() {
         <Outlet />
       </main>
     </div>
+    </MfaGate>
   );
 }
