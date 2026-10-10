@@ -22,6 +22,7 @@ import { Route as VerticalsRouteImport } from './routes/verticals'
 import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as AuthenticatedPartnerRouteImport } from './routes/_authenticated/partner'
 import { Route as VerticalsIndexRouteImport } from './routes/verticals.index'
 import { Route as VerticalsSlugRouteImport } from './routes/verticals.$slug'
 import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
@@ -29,6 +30,7 @@ import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authentic
 import { Route as AuthenticatedAdminApplicationsRouteImport } from './routes/_authenticated/admin.applications'
 import { Route as AuthenticatedAdminAuditRouteImport } from './routes/_authenticated/admin.audit'
 import { Route as AuthenticatedAdminMessagesRouteImport } from './routes/_authenticated/admin.messages'
+import { Route as AuthenticatedAdminSecurityRouteImport } from './routes/_authenticated/admin.security'
 import { Route as AuthenticatedAdminVerticalsRouteImport } from './routes/_authenticated/admin.verticals'
 
 const IndexRoute = IndexRouteImport.update({
@@ -97,6 +99,11 @@ const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedPartnerRoute = AuthenticatedPartnerRouteImport.update({
+  id: '/partner',
+  path: '/partner',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const VerticalsIndexRoute = VerticalsIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -135,6 +142,12 @@ const AuthenticatedAdminMessagesRoute =
     path: '/messages',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminSecurityRoute =
+  AuthenticatedAdminSecurityRouteImport.update({
+    id: '/security',
+    path: '/security',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminVerticalsRoute =
   AuthenticatedAdminVerticalsRouteImport.update({
     id: '/verticals',
@@ -155,12 +168,14 @@ export interface FileRoutesByFullPath {
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
+  '/partner': typeof AuthenticatedPartnerRoute
   '/verticals/$slug': typeof VerticalsSlugRoute
   '/verticals/': typeof VerticalsIndexRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/admin/applications': typeof AuthenticatedAdminApplicationsRoute
   '/admin/audit': typeof AuthenticatedAdminAuditRoute
   '/admin/messages': typeof AuthenticatedAdminMessagesRoute
+  '/admin/security': typeof AuthenticatedAdminSecurityRoute
   '/admin/verticals': typeof AuthenticatedAdminVerticalsRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
 }
@@ -175,12 +190,14 @@ export interface FileRoutesByTo {
   '/planet': typeof PlanetRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  '/partner': typeof AuthenticatedPartnerRoute
   '/verticals/$slug': typeof VerticalsSlugRoute
   '/verticals': typeof VerticalsIndexRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/admin/applications': typeof AuthenticatedAdminApplicationsRoute
   '/admin/audit': typeof AuthenticatedAdminAuditRoute
   '/admin/messages': typeof AuthenticatedAdminMessagesRoute
+  '/admin/security': typeof AuthenticatedAdminSecurityRoute
   '/admin/verticals': typeof AuthenticatedAdminVerticalsRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
 }
@@ -199,12 +216,14 @@ export interface FileRoutesById {
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
+  '/_authenticated/partner': typeof AuthenticatedPartnerRoute
   '/verticals/$slug': typeof VerticalsSlugRoute
   '/verticals/': typeof VerticalsIndexRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/_authenticated/admin/applications': typeof AuthenticatedAdminApplicationsRoute
   '/_authenticated/admin/audit': typeof AuthenticatedAdminAuditRoute
   '/_authenticated/admin/messages': typeof AuthenticatedAdminMessagesRoute
+  '/_authenticated/admin/security': typeof AuthenticatedAdminSecurityRoute
   '/_authenticated/admin/verticals': typeof AuthenticatedAdminVerticalsRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
 }
@@ -223,12 +242,14 @@ export interface FileRouteTypes {
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
     | '/admin'
+    | '/partner'
     | '/verticals/$slug'
     | '/verticals/'
     | '/.mcp/invoke-tool/$tool'
     | '/admin/applications'
     | '/admin/audit'
     | '/admin/messages'
+    | '/admin/security'
     | '/admin/verticals'
     | '/admin/'
   fileRoutesByTo: FileRoutesByTo
@@ -243,12 +264,14 @@ export interface FileRouteTypes {
     | '/planet'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
+    | '/partner'
     | '/verticals/$slug'
     | '/verticals'
     | '/.mcp/invoke-tool/$tool'
     | '/admin/applications'
     | '/admin/audit'
     | '/admin/messages'
+    | '/admin/security'
     | '/admin/verticals'
     | '/admin'
   id:
@@ -266,12 +289,14 @@ export interface FileRouteTypes {
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
     | '/_authenticated/admin'
+    | '/_authenticated/partner'
     | '/verticals/$slug'
     | '/verticals/'
     | '/.mcp/invoke-tool/$tool'
     | '/_authenticated/admin/applications'
     | '/_authenticated/admin/audit'
     | '/_authenticated/admin/messages'
+    | '/_authenticated/admin/security'
     | '/_authenticated/admin/verticals'
     | '/_authenticated/admin/'
   fileRoutesById: FileRoutesById
@@ -385,6 +410,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/partner': {
+      id: '/_authenticated/partner'
+      path: '/partner'
+      fullPath: '/partner'
+      preLoaderRoute: typeof AuthenticatedPartnerRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/verticals/': {
       id: '/verticals/'
       path: '/'
@@ -434,6 +466,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminMessagesRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/security': {
+      id: '/_authenticated/admin/security'
+      path: '/security'
+      fullPath: '/admin/security'
+      preLoaderRoute: typeof AuthenticatedAdminSecurityRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/verticals': {
       id: '/_authenticated/admin/verticals'
       path: '/verticals'
@@ -448,6 +487,7 @@ interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminApplicationsRoute: typeof AuthenticatedAdminApplicationsRoute
   AuthenticatedAdminAuditRoute: typeof AuthenticatedAdminAuditRoute
   AuthenticatedAdminMessagesRoute: typeof AuthenticatedAdminMessagesRoute
+  AuthenticatedAdminSecurityRoute: typeof AuthenticatedAdminSecurityRoute
   AuthenticatedAdminVerticalsRoute: typeof AuthenticatedAdminVerticalsRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
 }
@@ -456,6 +496,7 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminApplicationsRoute: AuthenticatedAdminApplicationsRoute,
   AuthenticatedAdminAuditRoute: AuthenticatedAdminAuditRoute,
   AuthenticatedAdminMessagesRoute: AuthenticatedAdminMessagesRoute,
+  AuthenticatedAdminSecurityRoute: AuthenticatedAdminSecurityRoute,
   AuthenticatedAdminVerticalsRoute: AuthenticatedAdminVerticalsRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
 }
@@ -465,10 +506,12 @@ const AuthenticatedAdminRouteWithChildren =
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRouteWithChildren
+  AuthenticatedPartnerRoute: typeof AuthenticatedPartnerRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRouteWithChildren,
+  AuthenticatedPartnerRoute: AuthenticatedPartnerRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
