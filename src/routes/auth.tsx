@@ -6,7 +6,7 @@ export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
       { title: "Sign in — Terra Belle Foundation" },
-      { name: "description", content: "Sign in to access the Terra Belle admin portal." },
+      { name: "description", content: "Sign in to the Terra Belle partner and admin portals." },
       { name: "robots", content: "noindex" },
     ],
   }),
@@ -25,7 +25,7 @@ function AuthPage() {
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
-      if (data.session) navigate({ to: "/admin" });
+      if (data.session) navigate({ to: "/partner" });
     });
   }, [navigate]);
 
@@ -39,7 +39,7 @@ function AuthPage() {
           email,
           password,
           options: {
-            emailRedirectTo: window.location.origin + "/admin",
+            emailRedirectTo: window.location.origin + "/partner",
             data: { full_name: name },
           },
         });
@@ -47,13 +47,13 @@ function AuthPage() {
         setSignedUp({ needsConfirm: !data.session });
         setBusy(false);
         if (!data.session) return;
-        navigate({ to: "/admin" });
+        navigate({ to: "/partner" });
         return;
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
       }
-      navigate({ to: "/admin" });
+      navigate({ to: "/partner" });
     } catch (e: any) {
       setErr(e.message ?? "Something went wrong");
     } finally {
@@ -71,8 +71,8 @@ function AuthPage() {
           <h1 className="mt-6 font-display text-[1.6rem] tracking-tight">Account created</h1>
           <p className="mt-3 text-[13.5px] leading-relaxed text-mist">
             {signedUp.needsConfirm
-              ? `We've sent a confirmation link to ${email}. Click it to activate your account, then sign in to the admin portal.`
-              : "Your account is active. Taking you to the admin portal…"}
+              ? `We've sent a confirmation link to ${email}. Click it to activate your account, then sign in to your partner portal.`
+              : "Your account is active. Taking you to your partner portal…"}
           </p>
           <button
             onClick={() => {
@@ -95,12 +95,12 @@ function AuthPage() {
           ← Terra Belle
         </Link>
         <h1 className="mt-6 font-display text-[1.8rem] leading-tight tracking-tight">
-          {mode === "signin" ? "Sign in" : "Create admin account"}
+          {mode === "signin" ? "Sign in" : "Create partner account"}
         </h1>
         <p className="mt-2 text-[13px] text-mist">
           {mode === "signin"
-            ? "Access the Terra Belle admin portal."
-            : "The first account created becomes admin."}
+            ? "Partners and staff sign in here."
+            : "Use the email you applied with to track your partnership."}
         </p>
 
         <form onSubmit={onSubmit} className="mt-6 grid gap-4">

@@ -6,7 +6,7 @@ import { actorEmail, assertAdminOnly, assertStaff, diffFields, writeAudit } from
 export const getAdminOverview = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    await assertStaff(context.supabase, context.userId);
+    await assertStaff(context.supabase, context.userId, context.claims);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
     const since24h = new Date(Date.now() - 24 * 3600 * 1000).toISOString();
@@ -104,7 +104,7 @@ export const getAdminOverview = createServerFn({ method: "GET" })
 export const listApplications = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    await assertStaff(context.supabase, context.userId);
+    await assertStaff(context.supabase, context.userId, context.claims);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data, error } = await supabaseAdmin
       .from("partner_applications")
@@ -121,7 +121,7 @@ export const updateApplicationStatus = createServerFn({ method: "POST" })
     z.object({ id: z.string().uuid(), status: z.enum(["new", "reviewing", "contacted", "closed"]) }).parse(d),
   )
   .handler(async ({ data, context }) => {
-    await assertStaff(context.supabase, context.userId);
+    await assertStaff(context.supabase, context.userId, context.claims);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
     const { data: before } = await supabaseAdmin
@@ -152,7 +152,7 @@ export const updateApplicationStatus = createServerFn({ method: "POST" })
 export const listContactMessages = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    await assertStaff(context.supabase, context.userId);
+    await assertStaff(context.supabase, context.userId, context.claims);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data, error } = await supabaseAdmin
       .from("contact_messages")
@@ -169,7 +169,7 @@ export const updateContactStatus = createServerFn({ method: "POST" })
     z.object({ id: z.string().uuid(), status: z.enum(["new", "reviewing", "replied", "closed"]) }).parse(d),
   )
   .handler(async ({ data, context }) => {
-    await assertStaff(context.supabase, context.userId);
+    await assertStaff(context.supabase, context.userId, context.claims);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
     const { data: before } = await supabaseAdmin
@@ -200,7 +200,7 @@ export const updateContactStatus = createServerFn({ method: "POST" })
 export const listVerticalsAdmin = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    await assertStaff(context.supabase, context.userId);
+    await assertStaff(context.supabase, context.userId, context.claims);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data } = await supabaseAdmin.from("verticals").select("*").order("slug");
     return data ?? [];
@@ -223,7 +223,7 @@ export const upsertVertical = createServerFn({ method: "POST" })
       .parse(d),
   )
   .handler(async ({ data, context }) => {
-    await assertStaff(context.supabase, context.userId);
+    await assertStaff(context.supabase, context.userId, context.claims);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
     const { data: before } = await supabaseAdmin
@@ -255,7 +255,7 @@ export const upsertVertical = createServerFn({ method: "POST" })
 export const listAuditLog = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    await assertStaff(context.supabase, context.userId);
+    await assertStaff(context.supabase, context.userId, context.claims);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data, error } = await supabaseAdmin
       .from("admin_audit_log")

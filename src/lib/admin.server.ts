@@ -3,7 +3,12 @@
  * server-fn splitter never drops them from the handler chunk.
  */
 
-export async function assertStaff(supabase: any, userId: string) {
+export function assertMfa(claims: any) {
+  if (claims?.aal !== "aal2") throw new Error("MFA required");
+}
+
+export async function assertStaff(supabase: any, userId: string, claims?: any) {
+  assertMfa(claims);
   const { data: admin, error } = await supabase.rpc("has_role", { _user_id: userId, _role: "admin" });
   if (error) throw new Error(error.message);
   if (admin) return { isAdmin: true };
@@ -12,7 +17,8 @@ export async function assertStaff(supabase: any, userId: string) {
   return { isAdmin: false };
 }
 
-export async function assertAdminOnly(supabase: any, userId: string) {
+export async function assertAdminOnly(supabase: any, userId: string, claims?: any) {
+  assertMfa(claims);
   const { data: admin } = await supabase.rpc("has_role", { _user_id: userId, _role: "admin" });
   if (!admin) throw new Error("Forbidden");
 }
