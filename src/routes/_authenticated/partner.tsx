@@ -31,6 +31,7 @@ function PartnerPortal() {
       <div className="flex items-center justify-between gap-4">
         <Link to="/" className="font-display tracking-tight">Terra Belle</Link>
         <div className="flex items-center gap-3 text-[12px] text-mist">
+          <Link to="/assess" className="rounded-full border border-black/10 px-3 py-1.5">Assess a project</Link>
           {(staff.data?.isAdmin || staff.data?.isEditor) && (
             <Link to="/admin" className="rounded-full bg-ink px-3 py-1.5 text-white">Admin portal</Link>
           )}
