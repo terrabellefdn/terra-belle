@@ -22,6 +22,7 @@ import { Route as VerticalsRouteImport } from './routes/verticals'
 import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as AuthenticatedAssessRouteImport } from './routes/_authenticated/assess'
 import { Route as AuthenticatedPartnerRouteImport } from './routes/_authenticated/partner'
 import { Route as VerticalsIndexRouteImport } from './routes/verticals.index'
 import { Route as VerticalsSlugRouteImport } from './routes/verticals.$slug'
@@ -99,6 +100,11 @@ const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAssessRoute = AuthenticatedAssessRouteImport.update({
+  id: '/assess',
+  path: '/assess',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedPartnerRoute = AuthenticatedPartnerRouteImport.update({
   id: '/partner',
   path: '/partner',
@@ -168,6 +174,7 @@ export interface FileRoutesByFullPath {
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
+  '/assess': typeof AuthenticatedAssessRoute
   '/partner': typeof AuthenticatedPartnerRoute
   '/verticals/$slug': typeof VerticalsSlugRoute
   '/verticals/': typeof VerticalsIndexRoute
@@ -190,6 +197,7 @@ export interface FileRoutesByTo {
   '/planet': typeof PlanetRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  '/assess': typeof AuthenticatedAssessRoute
   '/partner': typeof AuthenticatedPartnerRoute
   '/verticals/$slug': typeof VerticalsSlugRoute
   '/verticals': typeof VerticalsIndexRoute
@@ -216,6 +224,7 @@ export interface FileRoutesById {
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
+  '/_authenticated/assess': typeof AuthenticatedAssessRoute
   '/_authenticated/partner': typeof AuthenticatedPartnerRoute
   '/verticals/$slug': typeof VerticalsSlugRoute
   '/verticals/': typeof VerticalsIndexRoute
@@ -242,6 +251,7 @@ export interface FileRouteTypes {
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
     | '/admin'
+    | '/assess'
     | '/partner'
     | '/verticals/$slug'
     | '/verticals/'
@@ -264,6 +274,7 @@ export interface FileRouteTypes {
     | '/planet'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
+    | '/assess'
     | '/partner'
     | '/verticals/$slug'
     | '/verticals'
@@ -289,6 +300,7 @@ export interface FileRouteTypes {
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
     | '/_authenticated/admin'
+    | '/_authenticated/assess'
     | '/_authenticated/partner'
     | '/verticals/$slug'
     | '/verticals/'
@@ -410,6 +422,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/assess': {
+      id: '/_authenticated/assess'
+      path: '/assess'
+      fullPath: '/assess'
+      preLoaderRoute: typeof AuthenticatedAssessRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/partner': {
       id: '/_authenticated/partner'
       path: '/partner'
@@ -506,11 +525,13 @@ const AuthenticatedAdminRouteWithChildren =
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRouteWithChildren
+  AuthenticatedAssessRoute: typeof AuthenticatedAssessRoute
   AuthenticatedPartnerRoute: typeof AuthenticatedPartnerRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRouteWithChildren,
+  AuthenticatedAssessRoute: AuthenticatedAssessRoute,
   AuthenticatedPartnerRoute: AuthenticatedPartnerRoute,
 }
 
